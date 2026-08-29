@@ -14,7 +14,7 @@
 // ==============================================================================
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { SmtpClient } from "https://deno.land/x/denomailer@1.6.0/mod.ts";
+import nodemailer from "npm:nodemailer@6.9.14";
 
 const SMTP_HOST = Deno.env.get("SMTP_HOST") ?? "";
 const SMTP_PORT = Number(Deno.env.get("SMTP_PORT") ?? "587");
@@ -167,8 +167,8 @@ function quoteNotificationEmail(data: any): { subject: string; html: string } {
   return { subject: `Nouvelle demande de devis ${data.reference}`, html };
 }
 
-async function sendMail(client: SmtpClient, to: string, subject: string, html: string) {
-  await client.send({
+async function sendMail(transporter: nodemailer.Transporter, to: string, subject: string, html: string) {
+  await transporter.sendMail({
     from: SMTP_FROM,
     to,
     subject,
@@ -210,16 +210,15 @@ serve(async (req: Request) => {
       return jsonResponse({ error: "type doit être 'order', 'application' ou 'quote'" }, 400);
     }
 
-    const client = new SmtpClient();
-    await client.connect({
-      hostname: SMTP_HOST,
+    const transporter = nodemailer.createTransport({
+      host: SMTP_HOST,
       port: SMTP_PORT,
-      username: SMTP_USER,
-      password: SMTP_PASSWORD,
+      secure: SMTP_PORT === 465,
+      auth: { user: SMTP_USER, pass: SMTP_PASSWORD },
     });
 
     if (customerAddress && customerEmail) {
-      await sendMail(client, customerAddress, customerEmail.subject, customerEmail.html);
+      await sendMail(transporter, customerAddress, customerEmail.subject, customerEmail.html);
     }
 
     if (NOTIFICATION_EMAIL) {
@@ -228,10 +227,8 @@ serve(async (req: Request) => {
         : type === "quote"
         ? quoteNotificationEmail(body)
         : applicationNotificationEmail(body);
-      await sendMail(client, NOTIFICATION_EMAIL, internal.subject, internal.html);
+      await sendMail(transporter, NOTIFICATION_EMAIL, internal.subject, internal.html);
     }
-
-    await client.close();
 
     return jsonResponse({ success: true });
   } catch (err: any) {
