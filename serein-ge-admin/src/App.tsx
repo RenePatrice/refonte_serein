@@ -76,20 +76,29 @@ export default function App() {
     let active = true;
 
     const resolveSession = async (userId: string, email: string | undefined) => {
-      const otpVerified = sessionStorage.getItem(OTP_VERIFIED_KEY) === 'true';
-      if (!otpVerified) {
-        // Session Supabase valide (mot de passe correct) mais 2e facteur non
-        // encore franchi sur cet onglet : on reste bloqué à l'étape OTP.
-        setPendingOtpEmail(email || null);
-        setAuthUser(null);
-        return;
-      }
       const profile = await fetchProfile(userId);
       if (!active) return;
       if (!profile) {
         setAuthError("Ce compte n'a pas de profil administrateur actif. Contactez un Super Admin.");
         await client.auth.signOut();
         sessionStorage.removeItem(OTP_VERIFIED_KEY);
+        setAuthUser(null);
+        return;
+      }
+
+      // Le Super Admin n'est pas soumis au 2e facteur (code à 6 chiffres) :
+      // le mot de passe seul suffit à accorder l'accès.
+      if (profile.role === 'super_admin') {
+        setPendingOtpEmail(null);
+        setAuthUser(profile);
+        return;
+      }
+
+      const otpVerified = sessionStorage.getItem(OTP_VERIFIED_KEY) === 'true';
+      if (!otpVerified) {
+        // Session Supabase valide (mot de passe correct) mais 2e facteur non
+        // encore franchi sur cet onglet : on reste bloqué à l'étape OTP.
+        setPendingOtpEmail(email || null);
         setAuthUser(null);
         return;
       }
@@ -145,6 +154,20 @@ export default function App() {
       throw new Error(error?.message === 'Invalid login credentials'
         ? 'Email ou mot de passe incorrect.'
         : (error?.message || 'Échec de la connexion.'));
+    }
+
+    const profile = await fetchProfile(data.user.id);
+    if (!profile) {
+      await supabase.auth.signOut();
+      throw new Error("Ce compte n'a pas de profil administrateur actif. Contactez un Super Admin.");
+    }
+
+    // Le Super Admin n'est pas soumis au 2e facteur : accès accordé dès que
+    // le mot de passe est validé, sans code à 6 chiffres.
+    if (profile.role === 'super_admin') {
+      setPendingOtpEmail(null);
+      setAuthUser(profile);
+      return;
     }
 
     // Le mot de passe est valide : on déclenche l'envoi du code à 6 chiffres

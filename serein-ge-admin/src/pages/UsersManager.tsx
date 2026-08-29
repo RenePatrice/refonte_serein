@@ -256,7 +256,7 @@ export default function UsersManager({ currentUserId }: UsersManagerProps) {
 
       {isSupabaseConfigured && (
         <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-[11px] text-slate-400">
-          ℹ️ Le mot de passe est défini directement à la création du compte. À la connexion, l'administrateur devra saisir son mot de passe puis un code de vérification à 6 chiffres envoyé par email (valide 5 minutes).
+          ℹ️ Le mot de passe est défini directement à la création du compte. Les comptes Éditeur doivent saisir un code de vérification à 6 chiffres envoyé par email après le mot de passe (valide 5 minutes) ; les comptes Super Admin se connectent avec le mot de passe seul.
         </div>
       )}
 

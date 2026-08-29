@@ -217,7 +217,7 @@ export default function Login({
         {/* Security badge */}
         <div className="flex items-center justify-center space-x-2 text-[10px] text-slate-500 pt-1">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>{isSupabaseConfigured ? 'Mot de passe + code de vérification (Supabase Auth)' : 'Mode démo hors-ligne — Supabase non configuré'}</span>
+          <span>{isSupabaseConfigured ? 'Authentification sécurisée (Supabase Auth)' : 'Mode démo hors-ligne — Supabase non configuré'}</span>
         </div>
 
       </div>

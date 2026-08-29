@@ -16,10 +16,9 @@
 --    Copier l'UUID généré pour cet utilisateur.
 -- 2. Exécuter la requête ci-dessous dans le SQL Editor Supabase (contexte
 --    service role, qui contourne RLS), en remplaçant les valeurs d'exemple.
--- 3. Se connecter au dashboard admin avec cet email/mot de passe : un code à
---    6 chiffres sera envoyé par email (Authentication → Email Templates dans
---    Supabase, ou via le SMTP personnalisé — voir §4 ci-dessous) pour terminer
---    la connexion. Changer le mot de passe dès la première connexion.
+-- 3. Se connecter au dashboard admin avec cet email/mot de passe : les comptes
+--    Super Admin n'ont pas de 2e facteur, l'accès est accordé dès le mot de
+--    passe validé. Changer le mot de passe dès la première connexion.
 
 insert into public.users (id, email, nom_complet, role, is_active)
 values (
@@ -36,6 +35,8 @@ values (
 
 -- ==============================================================================
 -- Configuration requise côté projet Supabase pour le code à 6 chiffres (2FA)
+-- Ce 2e facteur ne s'applique qu'aux comptes rôle "editeur" — les comptes
+-- Super Admin s'y connectent au mot de passe seul (voir App.tsx).
 -- ==============================================================================
 -- Dashboard Supabase → Authentication → Settings → Email OTP Expiration :
 -- régler sur 300 (secondes) pour respecter la durée de validité de 5 minutes.

@@ -28,7 +28,10 @@ export function useSupabaseList<T>(
         query = query.order(options.orderColumn, { ascending: options?.ascending ?? true });
       }
       const { data: rows, error } = await query;
-      if (!cancelled && !error && rows && rows.length > 0) {
+      // Un tableau vide est une réponse légitime (ex: catalogue vidé depuis
+      // l'admin) : il ne faut PAS retomber sur le fallback mock-data dans ce
+      // cas, seulement si la requête a réellement échoué (error ou rows null).
+      if (!cancelled && !error && rows) {
         setData(rows as T[]);
       }
       if (!cancelled) setLoading(false);
