@@ -38,11 +38,11 @@ export default function Settings() {
     <div className="space-y-8 max-w-5xl">
       
       <div>
-        <h2 className="text-xl font-bold font-display text-white">Paramètres Système & Réseau Local</h2>
-        <p className="text-xs text-slate-400">Configuration de l'accès réseau d'entreprise, synchronisation Supabase et passerelles.</p>
+        <h2 className="text-xl font-bold font-display text-white">Paramètres Système</h2>
+        <p className="text-xs text-slate-400">Synchronisation Supabase et passerelles.</p>
       </div>
 
-      {/* 1. SECTION RESEAU LOCAL (Section 6 du Cahier des Charges) */}
+      {/* 1. SECTION RESEAU LOCAL (Section 6 du Cahier des Charges) 
       <div className="admin-card rounded-3xl p-8 border border-slate-800 space-y-6">
         <div className="flex items-center space-x-3">
           <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -73,7 +73,7 @@ export default function Settings() {
             ℹ️ Le serveur Vite est paramétré avec <code className="text-emerald-400 bg-slate-900 px-1 py-0.5 rounded">host: '0.0.0.0'</code>. Pour vous connecter depuis n'importe quel ordinateur connecté au même réseau Wi-Fi ou câble Ethernet de l'entreprise, tapez l'adresse IP locale du poste principal suivie du port <code>:5173</code>.
           </p>
         </div>
-      </div>
+      </div>*/}
 
       {/* 2. SECTION BASE DE DONNÉES CLOUD SUPABASE */}
       <div className="admin-card rounded-3xl p-8 border border-slate-800 space-y-6">

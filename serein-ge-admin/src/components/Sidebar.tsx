@@ -68,7 +68,7 @@ export default function Sidebar({ currentUser, onLogout }: SidebarProps) {
           </div>
         </div>
 
-        {/* LAN Indicator */}
+        {/* LAN Indicator 
         <div className="px-4 py-2.5 bg-black/40 border-b border-gray-800 flex items-center justify-between text-[11px]">
           <span className="flex items-center gap-1.5 text-emerald-400 font-mono">
             <Radio className="w-3.5 h-3.5 animate-pulse" />
@@ -77,7 +77,7 @@ export default function Sidebar({ currentUser, onLogout }: SidebarProps) {
           <span className="px-1.5 py-0.5 rounded bg-gray-800 text-[10px] text-gray-400 font-mono">
             :5173
           </span>
-        </div>
+        </div>*/}
 
         {/* Nav list */}
         <nav className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-230px)]">
