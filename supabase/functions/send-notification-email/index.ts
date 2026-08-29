@@ -140,6 +140,33 @@ function applicationNotificationEmail(data: any): { subject: string; html: strin
   return { subject: `Nouvelle candidature : ${data.posteSouhaite}`, html };
 }
 
+function quoteCustomerEmail(data: any): { subject: string; html: string } {
+  const html = emailShell(
+    "Confirmation de votre demande de devis",
+    `
+      <p style="font-size: 13px; color: #1a1712; line-height: 1.6;">
+        Bonjour ${data.prenom} ${data.nom},<br /><br />
+        Nous avons bien reçu votre demande de devis <strong>${data.reference}</strong> pour la prestation <strong>${data.posteSouhaite}</strong>. Nos ingénieurs analysent votre besoin et vous recontacteront sous 24h ouvrées avec une proposition technique et financière.
+      </p>
+    `
+  );
+  return { subject: `Demande de devis reçue ${data.reference} — ${COMPANY_NAME}`, html };
+}
+
+function quoteNotificationEmail(data: any): { subject: string; html: string } {
+  const html = emailShell(
+    "Nouvelle demande de devis reçue",
+    `
+      <p style="font-size: 13px; color: #1a1712;"><strong>Référence :</strong> ${data.reference}<br />
+      <strong>Prestation :</strong> ${data.posteSouhaite}<br />
+      <strong>Client :</strong> ${data.prenom} ${data.nom}<br />
+      <strong>Téléphone :</strong> ${data.telephone}<br />
+      <strong>Email :</strong> ${data.email}</p>
+    `
+  );
+  return { subject: `Nouvelle demande de devis ${data.reference}`, html };
+}
+
 async function sendMail(client: SmtpClient, to: string, subject: string, html: string) {
   await client.send({
     from: SMTP_FROM,
@@ -176,8 +203,11 @@ serve(async (req: Request) => {
     } else if (type === "application") {
       customerEmail = applicationCustomerEmail(body);
       customerAddress = body.email;
+    } else if (type === "quote") {
+      customerEmail = quoteCustomerEmail(body);
+      customerAddress = body.email;
     } else {
-      return jsonResponse({ error: "type doit être 'order' ou 'application'" }, 400);
+      return jsonResponse({ error: "type doit être 'order', 'application' ou 'quote'" }, 400);
     }
 
     const client = new SmtpClient();
@@ -193,7 +223,11 @@ serve(async (req: Request) => {
     }
 
     if (NOTIFICATION_EMAIL) {
-      const internal = type === "order" ? orderNotificationEmail(body) : applicationNotificationEmail(body);
+      const internal = type === "order"
+        ? orderNotificationEmail(body)
+        : type === "quote"
+        ? quoteNotificationEmail(body)
+        : applicationNotificationEmail(body);
       await sendMail(client, NOTIFICATION_EMAIL, internal.subject, internal.html);
     }
 

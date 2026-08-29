@@ -16,7 +16,8 @@ import {
   Compass,
   Radio,
   LogOut,
-  Bot
+  Bot,
+  FileSignature
 } from 'lucide-react';
 import { AdminUser } from '../types';
 import { isPathAllowed } from '../lib/permissions';
@@ -31,6 +32,7 @@ export default function Sidebar({ currentUser, onLogout }: SidebarProps) {
     { label: 'Tableau de bord', path: '/', icon: LayoutDashboard },
     { label: 'Produits & Stock', path: '/produits', icon: Package, badge: 'Stock' },
     { label: 'Commandes', path: '/commandes', icon: ShoppingBag },
+    { label: 'Demandes de Devis', path: '/devis', icon: FileSignature },
     { label: 'Paiements & Logs', path: '/paiements', icon: CreditCard },
     { label: 'Équipe & Experts', path: '/equipe', icon: Users },
     { label: 'Réalisations / Projets', path: '/realisations', icon: Layers },

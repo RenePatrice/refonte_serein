@@ -19,6 +19,8 @@ import {
   ShieldCheck,
   MessageCircle
 } from 'lucide-react';
+import { generateQuoteReference } from '../../lib/formatters';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 // Leaflet accède à `window` à l'import : le rendu doit rester strictement
 // côté client, y compris pendant le pré-rendu statique de `next build`.
@@ -35,6 +37,7 @@ export default function ContactAndQuotePage() {
   const [wizardStep, setWizardStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const [quoteData, setQuoteData] = useState({
     serviceType: 'Topographie & Géodésie',
@@ -59,13 +62,67 @@ export default function ContactAndQuotePage() {
     setWizardStep((prev) => Math.max(1, prev - 1));
   };
 
-  const handleSubmitQuote = (e: React.FormEvent) => {
+  const handleSubmitQuote = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
+    setSubmitError(null);
+    const reference = generateQuoteReference();
+
+    const payload = {
+      reference,
+      service_type: quoteData.serviceType,
+      project_scope: quoteData.projectScope || null,
+      surface_area: quoteData.surfaceArea || null,
+      location: quoteData.location,
+      timeframe: quoteData.timeframe || null,
+      budget_estimate: quoteData.budgetEstimate || null,
+      client_nom: quoteData.nom,
+      client_prenom: quoteData.prenom,
+      client_entreprise: quoteData.entreprise || null,
+      client_email: quoteData.email,
+      client_telephone: quoteData.telephone,
+      description: quoteData.description || null,
+      statut: 'nouveau',
+    };
+
+    // Mode démo hors-ligne : Supabase non configuré, on simule la confirmation
+    if (!isSupabaseConfigured || !supabase) {
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setQuoteSubmitted(true);
+      }, 1200);
+      return;
+    }
+
+    try {
+      const { error: insertError } = await supabase.from('quote_requests').insert(payload);
+      if (insertError) {
+        throw new Error("Échec de l'enregistrement de la demande : " + insertError.message);
+      }
+
+      // Email de confirmation : best-effort, ne bloque jamais la demande de
+      // devis elle-même si le SMTP n'est pas encore configuré.
+      supabase.functions
+        .invoke('send-notification-email', {
+          body: {
+            type: 'quote',
+            reference,
+            posteSouhaite: quoteData.serviceType,
+            nom: quoteData.nom,
+            prenom: quoteData.prenom,
+            email: quoteData.email,
+            telephone: quoteData.telephone,
+          },
+        })
+        .catch((err) => console.error('Email de confirmation non envoyé :', err));
+
       setIsSubmitting(false);
       setQuoteSubmitted(true);
-    }, 1200);
+    } catch (err: any) {
+      console.error('Erreur soumission devis:', err);
+      setIsSubmitting(false);
+      setSubmitError(err.message || 'Une erreur est survenue. Veuillez réessayer.');
+    }
   };
 
   return (
@@ -415,6 +472,12 @@ export default function ContactAndQuotePage() {
                         <div>Prestation : <strong className="text-emerald-400">{quoteData.serviceType}</strong></div>
                         <div>Localisation : <strong className="text-white">{quoteData.location}</strong> ({quoteData.timeframe})</div>
                       </div>
+
+                      {submitError && (
+                        <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-xs text-rose-300">
+                          {submitError}
+                        </div>
+                      )}
 
                       <div className="pt-4 flex justify-between">
                         <button

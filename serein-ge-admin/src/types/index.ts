@@ -150,6 +150,26 @@ export type JobOffer = {
   created_at: string;
 };
 
+export type QuoteRequest = {
+  id: string;
+  reference: string;
+  service_type: string;
+  project_scope?: string;
+  surface_area?: string;
+  location: string;
+  timeframe?: string;
+  budget_estimate?: string;
+  client_nom: string;
+  client_prenom: string;
+  client_entreprise?: string;
+  client_email: string;
+  client_telephone: string;
+  description?: string;
+  statut: 'nouveau' | 'en_cours' | 'traite' | 'annule';
+  notes_internes?: string;
+  created_at: string;
+};
+
 export type ChatbotSettings = {
   id: string;
   is_enabled: boolean;

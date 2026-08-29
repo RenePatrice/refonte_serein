@@ -182,6 +182,28 @@ CREATE TABLE IF NOT EXISTS public.payment_logs (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
+-- Table des Demandes de Devis (formulaire wizard /contact)
+CREATE TABLE IF NOT EXISTS public.quote_requests (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    reference TEXT NOT NULL UNIQUE,
+    service_type TEXT NOT NULL,
+    project_scope TEXT,
+    surface_area TEXT,
+    location TEXT NOT NULL,
+    timeframe TEXT,
+    budget_estimate TEXT,
+    client_nom TEXT NOT NULL,
+    client_prenom TEXT NOT NULL,
+    client_entreprise TEXT,
+    client_email TEXT NOT NULL,
+    client_telephone TEXT NOT NULL,
+    description TEXT,
+    statut TEXT NOT NULL DEFAULT 'nouveau' CHECK (statut IN ('nouveau', 'en_cours', 'traite', 'annule')),
+    notes_internes TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
 -- ==============================================================================
 -- 4. MODULE RECRUTEMENT (OFFRES D'EMPLOI, CANDIDATURES)
 -- ==============================================================================
@@ -280,6 +302,9 @@ CREATE INDEX IF NOT EXISTS idx_payment_logs_transaction ON public.payment_logs(t
 CREATE INDEX IF NOT EXISTS idx_realisations_slug ON public.realisations(slug);
 CREATE INDEX IF NOT EXISTS idx_actualites_slug ON public.actualites(slug);
 CREATE INDEX IF NOT EXISTS idx_job_offers_statut ON public.job_offers(statut);
+CREATE INDEX IF NOT EXISTS idx_quote_requests_reference ON public.quote_requests(reference);
+CREATE INDEX IF NOT EXISTS idx_quote_requests_statut ON public.quote_requests(statut);
+CREATE INDEX IF NOT EXISTS idx_quote_requests_created_at ON public.quote_requests(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_analytics_events_type ON public.analytics_events(event_type);
 CREATE INDEX IF NOT EXISTS idx_analytics_events_created_at ON public.analytics_events(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_analytics_events_session ON public.analytics_events(session_id);
@@ -306,7 +331,7 @@ BEGIN
         SELECT table_name 
         FROM information_schema.tables 
         WHERE table_schema = 'public' 
-          AND table_name IN ('users', 'departments', 'team', 'realisations', 'actualites', 'partners', 'products', 'orders', 'job_offers', 'applications', 'chatbot_settings', 'chatbot_conversations')
+          AND table_name IN ('users', 'departments', 'team', 'realisations', 'actualites', 'partners', 'products', 'orders', 'job_offers', 'applications', 'chatbot_settings', 'chatbot_conversations', 'quote_requests')
     LOOP
         EXECUTE format('DROP TRIGGER IF EXISTS trigger_updated_at ON public.%I;', t);
         EXECUTE format('CREATE TRIGGER trigger_updated_at BEFORE UPDATE ON public.%I FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();', t);

@@ -5,6 +5,7 @@ import { Role } from '../types';
 export const EDITEUR_ALLOWED_PATHS = [
   '/actualites',
   '/commandes',
+  '/devis',
   '/chatbot',
   '/equipe',
   '/realisations',

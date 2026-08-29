@@ -119,6 +119,13 @@ CREATE POLICY "Gestion lignes de commande par admin" ON public.order_items
 CREATE POLICY "Gestion logs de paiement réservée aux admins et webhooks de confiance" ON public.payment_logs
     FOR ALL USING (public.is_admin());
 
+-- Quote Requests (demandes de devis)
+ALTER TABLE public.quote_requests ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Dépôt de demande de devis public" ON public.quote_requests
+    FOR INSERT WITH CHECK (true);
+CREATE POLICY "Gestion des demandes de devis par admin" ON public.quote_requests
+    FOR ALL USING (public.is_admin());
+
 -- ------------------------------------------------------------------------------
 -- 4. POLITIQUES : RECRUTEMENT (Offres & Candidatures)
 -- ------------------------------------------------------------------------------

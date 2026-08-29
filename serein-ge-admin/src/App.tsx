@@ -12,6 +12,7 @@ import NewsManager from './pages/NewsManager';
 import PartnersManager from './pages/PartnersManager';
 import JobsManager from './pages/JobsManager';
 import ApplicationsManager from './pages/ApplicationsManager';
+import QuotesManager from './pages/QuotesManager';
 import UsersManager from './pages/UsersManager';
 import ChatbotManager from './pages/ChatbotManager';
 import Settings from './pages/Settings';
@@ -274,6 +275,7 @@ export default function App() {
               <Route path="/" element={<RoleGuard currentUser={currentUser} path="/"><Dashboard /></RoleGuard>} />
               <Route path="/produits" element={<RoleGuard currentUser={currentUser} path="/produits"><ProductsManager /></RoleGuard>} />
               <Route path="/commandes" element={<RoleGuard currentUser={currentUser} path="/commandes"><OrdersManager /></RoleGuard>} />
+              <Route path="/devis" element={<RoleGuard currentUser={currentUser} path="/devis"><QuotesManager /></RoleGuard>} />
               <Route path="/paiements" element={<RoleGuard currentUser={currentUser} path="/paiements"><PaymentsManager /></RoleGuard>} />
               <Route path="/equipe" element={<RoleGuard currentUser={currentUser} path="/equipe"><TeamManager /></RoleGuard>} />
               <Route path="/realisations" element={<RoleGuard currentUser={currentUser} path="/realisations"><RealisationsManager /></RoleGuard>} />
