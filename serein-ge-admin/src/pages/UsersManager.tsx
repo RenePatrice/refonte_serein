@@ -294,7 +294,7 @@ export default function UsersManager({ currentUserId }: UsersManagerProps) {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingUser ? 'Modifier le Compte' : 'Créer un Compte Administrateur'}
+        title={editingUser ? 'Modifier le Compte' : 'Création d\'Utilisateur'}
       >
         <form onSubmit={handleSave} className="space-y-4 text-xs">
           <div>
