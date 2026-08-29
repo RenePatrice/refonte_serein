@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 45 60% 98%;
+    --foreground: 30 55% 10%;
+  }
+
+  body {
+    @apply bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-white;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Glassmorphism Cards & Panels */
+.glass-panel {
+  background: rgba(250, 247, 239, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(69, 54, 32, 0.08);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(243, 235, 218, 0.7) 0%, rgba(250, 247, 239, 0.9) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(69, 54, 32, 0.07);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(176, 136, 56, 0.35);
+  box-shadow: 0 10px 30px -10px rgba(176, 136, 56, 0.2);
+  transform: translateY(-3px);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F3EBDA;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBAF78;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B08838;
+}
+
+/* Subtle Grid Background Pattern */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, rgba(69, 54, 32, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(69, 54, 32, 0.04) 1px, transparent 1px);
+}
