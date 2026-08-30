@@ -68,7 +68,7 @@ export default function Footer() {
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center space-x-3">
               {logo_url ? (
-                <img src={logo_url} alt="SEREIN-GE" className="h-12 w-auto max-w-[180px] object-contain" />
+                <img src={logo_url} alt="SEREIN-GE" className="w-12 h-12 rounded-full object-cover" />
               ) : (
                 <>
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-secondary flex items-center justify-center">

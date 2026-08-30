@@ -58,7 +58,7 @@ export default function Sidebar({ currentUser, onLogout, logoUrl }: SidebarProps
         <div className="p-6 border-b border-gray-800 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             {logoUrl ? (
-              <img src={logoUrl} alt="SEREIN-GE" className="h-11 w-auto max-w-[140px] object-contain shrink-0" />
+              <img src={logoUrl} alt="SEREIN-GE" className="w-12 h-12 rounded-full object-cover border border-gray-700 shrink-0" />
             ) : (
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-secondary flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
                 <Compass className="w-6 h-6 text-white" />

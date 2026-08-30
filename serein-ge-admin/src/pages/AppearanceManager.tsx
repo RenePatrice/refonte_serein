@@ -209,13 +209,15 @@ export default function AppearanceManager() {
                 className="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-emerald-500"
               />
               {settings.logo_url && (
-                <div className="w-24 h-16 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center p-2 shrink-0">
-                  <img src={settings.logo_url} alt="Aperçu logo" className="max-h-full max-w-full object-contain" />
-                </div>
+                <img
+                  src={settings.logo_url}
+                  alt="Aperçu logo"
+                  className="w-16 h-16 rounded-full object-cover border border-slate-800 shrink-0"
+                />
               )}
             </div>
             <p className="text-[10px] text-slate-500 mt-1">
-              Affiché en grand (jusqu'à 56px de haut) dans la navbar du site public et la barre latérale du back-office. Laisser vide pour garder l'icône par défaut.
+              Affiché en cercle (jusqu'à 56px de diamètre) dans la navbar du site public et la barre latérale du back-office. Une image carrée donne le meilleur rendu. Laisser vide pour garder l'icône par défaut.
             </p>
           </div>
 
