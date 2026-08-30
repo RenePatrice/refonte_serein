@@ -26,6 +26,7 @@ import { applyBrandColor, applyCssVarColor } from './lib/theme';
 import { applyFontPreset } from './lib/fontPresets';
 import { AccessRoleCode } from './types/hr.types';
 import EmployeesManager from './pages/hr/EmployeesManager';
+import ProjectsManager from './pages/hr/ProjectsManager';
 import { canAccessHrModule } from './lib/hrPermissions';
 import { Loader2, Compass } from 'lucide-react';
 
@@ -344,6 +345,10 @@ export default function App() {
               <Route
                 path="/rh/employes"
                 element={canAccessHrModule(userRoles) ? <EmployeesManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
+              <Route
+                path="/rh/projets"
+                element={canAccessHrModule(userRoles) ? <ProjectsManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
               />
               <Route
                 path="/utilisateurs"

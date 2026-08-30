@@ -19,7 +19,8 @@ import {
   Bot,
   FileSignature,
   Palette,
-  UserSquare2
+  UserSquare2,
+  FolderKanban
 } from 'lucide-react';
 import { AdminUser } from '../types';
 import { AccessRoleCode } from '../types/hr.types';
@@ -58,6 +59,7 @@ export default function Sidebar({ currentUser, onLogout, logoUrl, userRoles = []
   // super_admin/editeur historique, donc pas filtrés par isPathAllowed.
   if (canAccessHrModule(userRoles)) {
     visibleItems.splice(4, 0, { label: 'Employés RH', path: '/rh/employes', icon: UserSquare2 });
+    visibleItems.splice(5, 0, { label: 'Projets', path: '/rh/projets', icon: FolderKanban });
   }
 
   return (

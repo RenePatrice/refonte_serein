@@ -6,6 +6,8 @@ import { AdminUser, Role } from '../types';
 import { INITIAL_USERS } from '../lib/mock-admin-data';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { getPasswordRuleErrors } from '../lib/validators';
+import { AccessRoleCode } from '../types/hr.types';
+import { HR_ROLE_LABELS } from '../lib/hrPermissions';
 
 interface UsersManagerProps {
   currentUserId?: string;
@@ -20,6 +22,10 @@ const EMPTY_FORM = {
   password: '',
 };
 
+// Rôles additifs du module RH gérés indépendamment du "Rôle Système" de base
+// (super_admin/editeur), qui reste géré par le champ users.role ci-dessus.
+const HR_ADDITIONAL_ROLES: AccessRoleCode[] = ['rh', 'responsable_projet', 'employe'];
+
 export default function UsersManager({ currentUserId }: UsersManagerProps) {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(isSupabaseConfigured);
@@ -31,6 +37,10 @@ export default function UsersManager({ currentUserId }: UsersManagerProps) {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+
+  const [roleIdByCode, setRoleIdByCode] = useState<Record<string, string>>({});
+  const [hrRoles, setHrRoles] = useState<AccessRoleCode[]>([]);
+  const [loadingHrRoles, setLoadingHrRoles] = useState(false);
 
   const loadUsers = async () => {
     if (!isSupabaseConfigured || !supabase) {
@@ -52,6 +62,13 @@ export default function UsersManager({ currentUserId }: UsersManagerProps) {
 
   useEffect(() => {
     loadUsers();
+    if (isSupabaseConfigured && supabase) {
+      supabase.from('roles').select('id, code').then(({ data }) => {
+        const map: Record<string, string> = {};
+        (data || []).forEach((r: any) => { map[r.code] = r.id; });
+        setRoleIdByCode(map);
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -59,10 +76,11 @@ export default function UsersManager({ currentUserId }: UsersManagerProps) {
     setEditingUser(null);
     setFormError(null);
     setFormData({ ...EMPTY_FORM, telephone: '+226 ' });
+    setHrRoles([]);
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (user: AdminUser) => {
+  const handleOpenEdit = async (user: AdminUser) => {
     setEditingUser(user);
     setFormError(null);
     setFormData({
@@ -73,7 +91,20 @@ export default function UsersManager({ currentUserId }: UsersManagerProps) {
       is_active: user.is_active,
       password: '',
     });
+    setHrRoles([]);
     setIsModalOpen(true);
+
+    if (isSupabaseConfigured && supabase) {
+      setLoadingHrRoles(true);
+      const { data } = await supabase.from('user_roles').select('roles(code)').eq('user_id', user.id);
+      const codes = (data || []).map((row: any) => row.roles?.code).filter((c: string) => HR_ADDITIONAL_ROLES.includes(c as AccessRoleCode));
+      setHrRoles(codes as AccessRoleCode[]);
+      setLoadingHrRoles(false);
+    }
+  };
+
+  const toggleHrRole = (code: AccessRoleCode) => {
+    setHrRoles((prev) => (prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]));
   };
 
   const handleDelete = async (id: string) => {
@@ -145,11 +176,29 @@ export default function UsersManager({ currentUserId }: UsersManagerProps) {
         .select()
         .single();
 
-      setSaving(false);
       if (error || !data) {
+        setSaving(false);
         setFormError(error?.message || 'Échec de la mise à jour du compte');
         return;
       }
+
+      // Synchronise user_roles (module RH) : rôle système de base +
+      // rôles additifs (RH, Responsable de Projet, Employé) cochés.
+      const baseRoleCodes = ['super_admin', 'editeur'];
+      await supabase.from('user_roles').delete().eq('user_id', editingUser.id).in(
+        'role_id',
+        Object.entries(roleIdByCode).filter(([code]) => baseRoleCodes.includes(code) || HR_ADDITIONAL_ROLES.includes(code as AccessRoleCode)).map(([, id]) => id)
+      );
+      const codesToAssign = [formData.role, ...hrRoles];
+      const rowsToInsert = codesToAssign
+        .map((code) => roleIdByCode[code])
+        .filter(Boolean)
+        .map((role_id) => ({ user_id: editingUser.id, role_id }));
+      if (rowsToInsert.length > 0) {
+        await supabase.from('user_roles').insert(rowsToInsert);
+      }
+
+      setSaving(false);
       setUsers(users.map((u) => (u.id === editingUser.id ? (data as AdminUser) : u)));
     } else {
       const { data, error } = await supabase.functions.invoke('admin-users', {
@@ -355,6 +404,25 @@ export default function UsersManager({ currentUserId }: UsersManagerProps) {
               </select>
             </div>
           </div>
+
+          {editingUser && (
+            <div>
+              <label className="block font-semibold text-slate-300 mb-2">Rôles RH Additionnels (module RH, cumulables)</label>
+              {loadingHrRoles ? (
+                <div className="flex items-center gap-2 text-slate-400"><Loader2 className="w-3.5 h-3.5 animate-spin" /><span>Chargement...</span></div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {HR_ADDITIONAL_ROLES.map((code) => (
+                    <label key={code} className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-950 border border-slate-800 cursor-pointer">
+                      <input type="checkbox" checked={hrRoles.includes(code)} onChange={() => toggleHrRole(code)} className="w-4 h-4 rounded accent-emerald-500" />
+                      <span className="text-slate-200">{HR_ROLE_LABELS[code]}</span>
+                    </label>
+                  ))}
+                </div>
+              )}
+              <p className="text-[10px] text-slate-500 mt-1.5">S'ajoutent au Rôle Système ci-dessus. Ex : un Éditeur peut aussi être RH ou Responsable de Projet.</p>
+            </div>
+          )}
 
           {!editingUser && (
             <div>

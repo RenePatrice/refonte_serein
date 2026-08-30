@@ -116,6 +116,15 @@ serve(async (req: Request) => {
         return jsonResponse({ error: profileError?.message || "Échec de la création du profil" }, 500);
       }
 
+      // Miroir dans user_roles (module RH) : garde le nouveau système de
+      // rôles cumulables synchronisé avec le rôle de base dès la création,
+      // sans quoi le compte n'apparaîtrait dans user_roles qu'après une
+      // première modification.
+      const { data: roleRow } = await serviceClient.from("roles").select("id").eq("code", role).maybeSingle();
+      if (roleRow) {
+        await serviceClient.from("user_roles").insert({ user_id: created.user.id, role_id: roleRow.id });
+      }
+
       return jsonResponse({ user: profile });
     }
 
