@@ -279,6 +279,7 @@ export default function App() {
         pendingOtpEmail={isSupabaseConfigured ? pendingOtpEmail : null}
         onQuickDemoLogin={!isSupabaseConfigured ? handleQuickDemoLogin : undefined}
         initialError={authError}
+        logoUrl={logoUrl}
       />
     );
   }
