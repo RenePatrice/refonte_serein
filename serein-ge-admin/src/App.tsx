@@ -305,9 +305,12 @@ export default function App() {
   if (isSupabaseConfigured && authLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center gap-4 text-slate-400">
-        <Compass className="w-10 h-10 text-emerald-400" />
+        {logoUrl ? (
+          <img src={logoUrl} alt="SEREIN-GE" className="w-14 h-14 rounded-full object-cover" />
+        ) : (
+          <Compass className="w-10 h-10 text-emerald-400" />
+        )}
         <Loader2 className="w-6 h-6 animate-spin" />
-        <span className="text-xs">Vérification de la session Supabase...</span>
       </div>
     );
   }
