@@ -26,9 +26,10 @@ import { isPathAllowed } from '../lib/permissions';
 interface SidebarProps {
   currentUser: AdminUser;
   onLogout: () => void;
+  logoUrl?: string | null;
 }
 
-export default function Sidebar({ currentUser, onLogout }: SidebarProps) {
+export default function Sidebar({ currentUser, onLogout, logoUrl }: SidebarProps) {
   const menuItems = [
     { label: 'Tableau de bord', path: '/', icon: LayoutDashboard },
     { label: 'Produits & Stock', path: '/produits', icon: Package, badge: 'Stock' },
@@ -56,9 +57,13 @@ export default function Sidebar({ currentUser, onLogout }: SidebarProps) {
       <div>
         <div className="p-6 border-b border-gray-800 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <Compass className="w-6 h-6 text-white" />
-            </div>
+            {logoUrl ? (
+              <img src={logoUrl} alt="SEREIN-GE" className="h-11 w-auto max-w-[140px] object-contain shrink-0" />
+            ) : (
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-secondary flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
+                <Compass className="w-6 h-6 text-white" />
+              </div>
+            )}
             <div>
               <span className="text-lg font-bold font-display text-gray-50 tracking-tight flex items-center gap-1">
                 SEREIN<span className="text-emerald-400">-GE</span>

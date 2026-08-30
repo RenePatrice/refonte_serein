@@ -289,9 +289,19 @@ CREATE TABLE IF NOT EXISTS public.analytics_events (
 -- Ligne de configuration unique de l'apparence du site public (couleur de
 -- marque, logo). N'affecte PAS la palette verte de validation/statut du
 -- back-office, qui reste une convention UX fixe (succès=vert, échec=rouge).
+-- primary/secondary_color pilotent le site public ; admin_primary/secondary_color
+-- pilotent le back-office (indépendamment, sans jamais toucher au vert/rouge de
+-- statut qui reste une convention UX fixe). font_family / admin_font_family sont
+-- des clés de préréglage ('default', 'poppins', 'manrope', ...), pas des noms
+-- de police libres, pour rester dans une liste de polices Google Fonts curée.
 CREATE TABLE IF NOT EXISTS public.site_settings (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     primary_color TEXT NOT NULL DEFAULT '#CA9100',
+    secondary_color TEXT NOT NULL DEFAULT '#0F766E',
+    admin_primary_color TEXT NOT NULL DEFAULT '#3E9B63',
+    admin_secondary_color TEXT NOT NULL DEFAULT '#5EB37D',
+    font_family TEXT NOT NULL DEFAULT 'default',
+    admin_font_family TEXT NOT NULL DEFAULT 'default',
     logo_url TEXT,
     site_tagline TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),

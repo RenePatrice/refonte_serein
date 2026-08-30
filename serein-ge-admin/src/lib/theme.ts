@@ -1,8 +1,6 @@
 // ==============================================================================
-// SEREIN-GE : Génération de la rampe de couleur de marque (module Apparence)
-// À partir d'une seule couleur primaire choisie par l'admin, génère les 11
-// teintes 50-950 par mélange blanc/noir, et les applique en variables CSS
-// "R G B" que tailwind.config.ts consomme via rgb(var(--brand-N) / alpha).
+// SEREIN-GE : Génération de la rampe de couleur de marque du back-office
+// (module Apparence). Miroir de la logique utilisée côté site public.
 // ==============================================================================
 
 type RGB = [number, number, number];
@@ -40,12 +38,12 @@ export function buildBrandRamp(baseHex: string): Record<string, RGB> | null {
   return ramp;
 }
 
-export function applyBrandColor(hex: string): void {
+export function applyBrandColor(hex: string, prefix: string): void {
   const ramp = buildBrandRamp(hex);
   if (!ramp || typeof document === 'undefined') return;
   const root = document.documentElement;
   for (const [step, [r, g, b]] of Object.entries(ramp)) {
-    root.style.setProperty(`--brand-${step}`, `${r} ${g} ${b}`);
+    root.style.setProperty(`--${prefix}-${step}`, `${r} ${g} ${b}`);
   }
 }
 

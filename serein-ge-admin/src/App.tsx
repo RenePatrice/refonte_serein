@@ -22,6 +22,8 @@ import { AdminUser } from './types';
 import { INITIAL_USERS } from './lib/mock-admin-data';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { isPathAllowed, EDITEUR_DEFAULT_PATH } from './lib/permissions';
+import { applyBrandColor, applyCssVarColor } from './lib/theme';
+import { applyFontPreset } from './lib/fontPresets';
 import { Loader2, Compass } from 'lucide-react';
 
 const DEMO_SESSION_KEY = 'serein_admin_demo_user';
@@ -70,6 +72,26 @@ export default function App() {
   // Non-null pendant l'étape "code à 6 chiffres" : mot de passe déjà validé,
   // code envoyé par email, en attente de vérification.
   const [pendingOtpEmail, setPendingOtpEmail] = useState<string | null>(null);
+
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  // Apparence du back-office (couleur, police, logo) : appliquée globalement,
+  // y compris sur l'écran de connexion, dès le chargement de l'app.
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) return;
+    supabase
+      .from('site_settings')
+      .select('admin_primary_color, admin_secondary_color, admin_font_family, logo_url')
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!data) return;
+        if (data.admin_primary_color) applyBrandColor(data.admin_primary_color, 'admin-brand');
+        if (data.admin_secondary_color) applyCssVarColor('--admin-brand-secondary', data.admin_secondary_color);
+        applyFontPreset(data.admin_font_family, '--admin-font-sans', '--admin-font-display');
+        if (data.logo_url) setLogoUrl(data.logo_url);
+      });
+  }, []);
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) return;
@@ -265,7 +287,7 @@ export default function App() {
     <BrowserRouter>
       <div className="flex min-h-screen bg-slate-950 text-slate-100 antialiased">
         {/* Sidebar Left */}
-        <Sidebar currentUser={currentUser} onLogout={handleLogout} />
+        <Sidebar currentUser={currentUser} onLogout={handleLogout} logoUrl={logoUrl} />
 
         {/* Main Workspace Right */}
         <div className="flex-1 flex flex-col min-w-0">

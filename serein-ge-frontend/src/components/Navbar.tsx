@@ -83,10 +83,10 @@ export default function Navbar() {
               <img
                 src={logo_url}
                 alt="SEREIN-GE"
-                className="w-10 h-10 rounded-xl object-cover shadow-glow-emerald group-hover:scale-105 transition-transform duration-300 shrink-0"
+                className="h-12 sm:h-14 w-auto max-w-[180px] object-contain group-hover:scale-105 transition-transform duration-300 shrink-0"
               />
             ) : (
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-glow-emerald group-hover:scale-105 transition-transform duration-300 shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-secondary flex items-center justify-center shadow-glow-emerald group-hover:scale-105 transition-transform duration-300 shrink-0">
                 <Compass className="w-6 h-6 text-white" />
               </div>
             )}

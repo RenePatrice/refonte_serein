@@ -181,6 +181,11 @@ export type ChatbotSettings = {
 export type SiteSettings = {
   id: string;
   primary_color: string;
+  secondary_color: string;
+  admin_primary_color: string;
+  admin_secondary_color: string;
+  font_family: string;
+  admin_font_family: string;
   logo_url?: string | null;
   site_tagline?: string | null;
   updated_at?: string;

@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+import { useSiteSettings } from './ThemeProvider';
 import Link from 'next/link';
 import { 
   Compass, 
@@ -12,6 +15,7 @@ import {
 } from 'lucide-react';
 
 export default function Footer() {
+  const { logo_url } = useSiteSettings();
   return (
     <footer className="bg-slate-950 border-t border-slate-800/80 text-slate-400 text-sm">
       {/* Pre-footer : Avantages & Engagements */}
@@ -63,12 +67,18 @@ export default function Footer() {
           {/* Col 1: Brand & Bio */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center">
-                <Compass className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold font-display text-white">
-                SEREIN<span className="text-emerald-400">-GE</span>
-              </span>
+              {logo_url ? (
+                <img src={logo_url} alt="SEREIN-GE" className="h-12 w-auto max-w-[180px] object-contain" />
+              ) : (
+                <>
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-secondary flex items-center justify-center">
+                    <Compass className="w-6 h-6 text-white" />
+                  </div>
+                  <span className="text-2xl font-bold font-display text-white">
+                    SEREIN<span className="text-emerald-400">-GE</span>
+                  </span>
+                </>
+              )}
             </Link>
             <p className="text-slate-400 text-sm leading-relaxed pr-6">
               Société d'Études, de Recherches, d'Expertise et d'Ingénierie Géomatique. Leader au Burkina Faso et en Afrique de l'Ouest dans les levés géodésiques, le contrôle d'infrastructures et la distribution d'équipements de mesure de haute précision.

@@ -100,10 +100,15 @@ const config: Config = {
           cyan: '#06b6d4',
           blue: '#2563eb',
         },
+        // Couleur secondaire de marque (module Apparence), utilisée pour les
+        // dégradés (logo, boutons) en complément de la couleur primaire.
+        secondary: 'rgb(var(--brand-secondary) / <alpha-value>)',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Outfit', 'system-ui', 'sans-serif'],
+        // Pilotable en direct depuis le module Apparence (préréglages Google
+        // Fonts). Valeurs par défaut définies dans globals.css :root.
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         'glow-emerald': '0 0 24px -6px rgba(202, 145, 0, 0.4)',
