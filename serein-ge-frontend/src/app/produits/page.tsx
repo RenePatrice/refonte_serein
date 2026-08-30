@@ -1,14 +1,23 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Search, Filter, SlidersHorizontal, ShoppingBag, ShieldCheck, Truck, RefreshCw } from 'lucide-react';
 import ProductCard from '../../components/ProductCard';
 import { INITIAL_PRODUCTS } from '../../lib/mock-data';
 import { useSupabaseList } from '../../lib/useSupabaseData';
+import { trackEvent } from '../../lib/analytics';
 
 export default function ProductsCatalogPage() {
   const { data: allProducts } = useSupabaseList('products', INITIAL_PRODUCTS, { orderColumn: 'created_at', ascending: false });
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    if (!searchQuery.trim()) return;
+    const timer = setTimeout(() => {
+      trackEvent('search', { metadata: { query: searchQuery } });
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
   const [selectedBrand, setSelectedBrand] = useState('Toutes');
   const [selectedCategory, setSelectedCategory] = useState('Toutes');
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'name'>('featured');

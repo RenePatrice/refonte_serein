@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import CartDrawer from '../components/CartDrawer';
 import ChatbotWidget from '../components/ChatbotWidget';
 import ThemeProvider from '../components/ThemeProvider';
+import PageViewTracker from '../components/PageViewTracker';
 
 export const metadata: Metadata = {
   title: 'SEREIN-GE | Ingénierie Géomatique, Topographie & Distribution Matériel de Haute Précision',
@@ -30,6 +31,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans antialiased">
         <ThemeProvider>
+          <PageViewTracker />
           <Navbar />
           <main className="flex-1">
             {children}

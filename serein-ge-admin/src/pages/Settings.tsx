@@ -115,30 +115,32 @@ export default function Settings() {
         </div>
       </div>
 
-      {/* 3. PASSERELLES DE PAIEMENT */}
+      {/* 3. PARCOURS DE COMMANDE */}
       <div className="admin-card rounded-3xl p-8 border border-slate-800 space-y-6">
         <div className="flex items-center space-x-3">
           <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
             <CreditCard className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white font-display">Passerelles de Paiement Intégrées</h3>
-            <p className="text-xs text-slate-400">CinetPay Mobile Money (Burkina Faso) et Stripe (International)</p>
+            <h3 className="text-lg font-bold text-white font-display">Parcours de Commande</h3>
+            <p className="text-xs text-slate-400">Aucun paiement en ligne — confirmation par WhatsApp et email, règlement en espèces, virement ou chèque</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
-            <div className="font-bold text-white">CinetPay (Afrique de l'Ouest)</div>
-            <p className="text-slate-400 text-[11px]">Gère Orange Money Burkina, Moov Money Burkina, Wave et cartes bancaires locales.</p>
-            <div className="text-emerald-400 font-mono text-[10px]">Webhook : /functions/cinetpay-webhook</div>
+            <div className="font-bold text-white">WhatsApp</div>
+            <p className="text-slate-400 text-[11px]">Chaque commande ouvre une conversation WhatsApp pré-remplie avec le client pour finaliser le règlement et la livraison.</p>
           </div>
 
           <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-2">
-            <div className="font-bold text-white">Stripe Checkout</div>
-            <p className="text-slate-400 text-[11px]">Paiements en devises par cartes Visa et Mastercard internationales.</p>
-            <div className="text-blue-400 font-mono text-[10px]">Webhook : /functions/stripe-webhook</div>
+            <div className="font-bold text-white">Email de confirmation</div>
+            <p className="text-slate-400 text-[11px]">Envoyé au client et en copie interne via l'edge function send-notification-email (SMTP configuré).</p>
           </div>
+        </div>
+
+        <div className="p-3 rounded-xl bg-slate-950/40 border border-slate-800/60 text-[11px] text-slate-500">
+          CinetPay et Stripe restent présents dans le code (supabase/functions/) mais ne sont appelés par aucun parcours actif — conservés en réserve pour une réactivation future du paiement en ligne, non branchés au checkout aujourd'hui.
         </div>
       </div>
 
