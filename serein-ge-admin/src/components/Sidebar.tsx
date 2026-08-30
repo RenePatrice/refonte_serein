@@ -27,7 +27,7 @@ import {
 import { AdminUser } from '../types';
 import { AccessRoleCode } from '../types/hr.types';
 import { isPathAllowed } from '../lib/permissions';
-import { canAccessHrModule, hasAccessRole } from '../lib/hrPermissions';
+import { canAccessHrModule, canManageEmployees, canViewOwnTeam, hasAccessRole } from '../lib/hrPermissions';
 
 interface SidebarProps {
   currentUser: AdminUser;
@@ -60,8 +60,14 @@ export default function Sidebar({ currentUser, onLogout, logoUrl, userRoles = []
 
   // Rôles additifs du module RH : gérés séparément du système
   // super_admin/editeur historique, donc pas filtrés par isPathAllowed.
-  if (canAccessHrModule(userRoles)) {
+  if (canManageEmployees(userRoles)) {
     visibleItems.splice(4, 0, { label: 'Employés RH', path: '/rh/employes', icon: UserSquare2 });
+  } else if (canViewOwnTeam(userRoles)) {
+    // Un responsable_projet sans rôle rh/super_admin n'a qu'une vue en
+    // lecture seule de son équipe, pas le CRUD complet.
+    visibleItems.splice(4, 0, { label: 'Mon Équipe', path: '/rh/mon-equipe', icon: UserSquare2 });
+  }
+  if (canAccessHrModule(userRoles)) {
     visibleItems.splice(5, 0, { label: 'Projets', path: '/rh/projets', icon: FolderKanban });
   }
 

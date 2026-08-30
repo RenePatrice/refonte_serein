@@ -1,14 +1,17 @@
 import React from 'react';
-import { Bell, Search, ExternalLink, ShieldCheck, Globe, Wifi } from 'lucide-react';
+import { ExternalLink, Globe } from 'lucide-react';
 import { AdminUser } from '../types';
+import { AccessRoleCode } from '../types/hr.types';
+import NotificationsBell from './NotificationsBell';
 
 interface HeaderProps {
   title: string;
   subtitle?: string;
   currentUser: AdminUser;
+  userRoles?: AccessRoleCode[];
 }
 
-export default function Header({ title, subtitle, currentUser }: HeaderProps) {
+export default function Header({ title, subtitle, currentUser, userRoles = [] }: HeaderProps) {
   return (
     <header className="h-18 bg-gray-950/95 backdrop-blur-md border-b border-gray-800 px-8 flex items-center justify-between sticky top-0 z-30">
       <div>
@@ -36,13 +39,8 @@ export default function Header({ title, subtitle, currentUser }: HeaderProps) {
           <ExternalLink className="w-3 h-3 ml-0.5" />
         </a>
 
-        {/* Notifications badge */}
-        {/*<div className="relative">
-          <button className="p-2.5 rounded-xl bg-black/40 border border-gray-800 text-gray-300 hover:text-gray-50 transition">
-            <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          </button>
-        </div>*/}
+        {/* Notifications RH : alertes d'expiration (contrats, pièces d'identité, permis) */}
+        <NotificationsBell userRoles={userRoles} />
       </div>
     </header>
   );

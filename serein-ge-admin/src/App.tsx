@@ -29,7 +29,8 @@ import EmployeesManager from './pages/hr/EmployeesManager';
 import ProjectsManager from './pages/hr/ProjectsManager';
 import MyProfile from './pages/hr/MyProfile';
 import MyProjectReports from './pages/hr/MyProjectReports';
-import { canAccessHrModule, hasAccessRole } from './lib/hrPermissions';
+import MyTeam from './pages/hr/MyTeam';
+import { canAccessHrModule, canManageEmployees, canViewOwnTeam, hasAccessRole } from './lib/hrPermissions';
 import { Loader2, Compass } from 'lucide-react';
 
 const DEMO_SESSION_KEY = 'serein_admin_demo_user';
@@ -334,7 +335,7 @@ export default function App() {
 
         {/* Main Workspace Right */}
         <div className="flex-1 flex flex-col min-w-0">
-          <Header title="Supervision SEREIN-GE" currentUser={currentUser} />
+          <Header title="Supervision SEREIN-GE" currentUser={currentUser} userRoles={userRoles} />
 
           <main className="flex-1 p-8 overflow-y-auto max-w-7xl w-full mx-auto">
             <Routes>
@@ -356,7 +357,11 @@ export default function App() {
               />
               <Route
                 path="/rh/employes"
-                element={canAccessHrModule(userRoles) ? <EmployeesManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+                element={canManageEmployees(userRoles) ? <EmployeesManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
+              <Route
+                path="/rh/mon-equipe"
+                element={canViewOwnTeam(userRoles) ? <MyTeam /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
               />
               <Route
                 path="/rh/projets"
