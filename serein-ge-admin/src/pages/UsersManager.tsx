@@ -184,18 +184,46 @@ export default function UsersManager({ currentUserId }: UsersManagerProps) {
 
       // Synchronise user_roles (module RH) : rôle système de base +
       // rôles additifs (RH, Responsable de Projet, Employé) cochés.
-      const baseRoleCodes = ['super_admin', 'editeur'];
-      await supabase.from('user_roles').delete().eq('user_id', editingUser.id).in(
-        'role_id',
-        Object.entries(roleIdByCode).filter(([code]) => baseRoleCodes.includes(code) || HR_ADDITIONAL_ROLES.includes(code as AccessRoleCode)).map(([, id]) => id)
-      );
-      const codesToAssign = [formData.role, ...hrRoles];
-      const rowsToInsert = codesToAssign
+      //
+      // Fait un diff (n'insère/supprime que ce qui change) plutôt qu'un
+      // delete-then-insert complet : un super admin qui modifie SON PROPRE
+      // compte sans changer son propre rôle ne doit jamais voir sa ligne
+      // super_admin supprimée puis échouer à se la ré-attribuer, car la
+      // policy RLS d'INSERT sur user_roles exige has_role('super_admin') --
+      // qui redevient faux dès que sa propre ligne a été supprimée entre les
+      // deux requêtes. Un delete-then-insert naïf provoque donc un
+      // auto-verrouillage silencieux (l'insert échoue sans erreur visible).
+      const managedRoleCodes = ['super_admin', 'editeur', ...HR_ADDITIONAL_ROLES];
+      const desiredCodes = new Set<string>([formData.role, ...hrRoles]);
+
+      const { data: existingRows } = await supabase
+        .from('user_roles')
+        .select('id, roles(code)')
+        .eq('user_id', editingUser.id);
+
+      const existingManaged = (existingRows || [])
+        .map((row: any) => ({ id: row.id, code: row.roles?.code as string | undefined }))
+        .filter((row) => row.code && managedRoleCodes.includes(row.code));
+
+      const idsToRemove = existingManaged.filter((row) => !desiredCodes.has(row.code!)).map((row) => row.id);
+      const existingCodes = new Set(existingManaged.map((row) => row.code));
+      const rowsToInsert = Array.from(desiredCodes)
+        .filter((code) => !existingCodes.has(code))
         .map((code) => roleIdByCode[code])
         .filter(Boolean)
         .map((role_id) => ({ user_id: editingUser.id, role_id }));
+
+      let roleSyncError: string | null = null;
+      if (idsToRemove.length > 0) {
+        const { error: delError } = await supabase.from('user_roles').delete().in('id', idsToRemove);
+        if (delError) roleSyncError = delError.message;
+      }
       if (rowsToInsert.length > 0) {
-        await supabase.from('user_roles').insert(rowsToInsert);
+        const { error: insError } = await supabase.from('user_roles').insert(rowsToInsert);
+        if (insError) roleSyncError = insError.message;
+      }
+      if (roleSyncError) {
+        alert("Le compte a été enregistré, mais la synchronisation des rôles RH a échoué : " + roleSyncError);
       }
 
       setSaving(false);
