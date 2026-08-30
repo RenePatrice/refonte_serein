@@ -18,18 +18,22 @@ import {
   LogOut,
   Bot,
   FileSignature,
-  Palette
+  Palette,
+  UserSquare2
 } from 'lucide-react';
 import { AdminUser } from '../types';
+import { AccessRoleCode } from '../types/hr.types';
 import { isPathAllowed } from '../lib/permissions';
+import { canAccessHrModule } from '../lib/hrPermissions';
 
 interface SidebarProps {
   currentUser: AdminUser;
   onLogout: () => void;
   logoUrl?: string | null;
+  userRoles?: AccessRoleCode[];
 }
 
-export default function Sidebar({ currentUser, onLogout, logoUrl }: SidebarProps) {
+export default function Sidebar({ currentUser, onLogout, logoUrl, userRoles = [] }: SidebarProps) {
   const menuItems = [
     { label: 'Tableau de bord', path: '/', icon: LayoutDashboard },
     { label: 'Produits & Stock', path: '/produits', icon: Package, badge: 'Stock' },
@@ -49,6 +53,12 @@ export default function Sidebar({ currentUser, onLogout, logoUrl }: SidebarProps
   ];
 
   const visibleItems = menuItems.filter((item) => isPathAllowed(currentUser.role, item.path));
+
+  // Rôles additifs du module RH : gérés séparément du système
+  // super_admin/editeur historique, donc pas filtrés par isPathAllowed.
+  if (canAccessHrModule(userRoles)) {
+    visibleItems.splice(4, 0, { label: 'Employés RH', path: '/rh/employes', icon: UserSquare2 });
+  }
 
   return (
     <aside className="w-64 bg-gray-950 border-r border-gray-800 flex flex-col justify-between shrink-0 h-screen sticky top-0">

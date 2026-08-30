@@ -24,6 +24,9 @@ import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { isPathAllowed, EDITEUR_DEFAULT_PATH } from './lib/permissions';
 import { applyBrandColor, applyCssVarColor } from './lib/theme';
 import { applyFontPreset } from './lib/fontPresets';
+import { AccessRoleCode } from './types/hr.types';
+import EmployeesManager from './pages/hr/EmployeesManager';
+import { canAccessHrModule } from './lib/hrPermissions';
 import { Loader2, Compass } from 'lucide-react';
 
 const DEMO_SESSION_KEY = 'serein_admin_demo_user';
@@ -74,6 +77,34 @@ export default function App() {
   const [pendingOtpEmail, setPendingOtpEmail] = useState<string | null>(null);
 
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  // Rôles additifs du module RH (cumul via user_roles), indépendants du
+  // users.role historique (super_admin/editeur) utilisé par lib/permissions.ts.
+  const [userRoles, setUserRoles] = useState<AccessRoleCode[]>([]);
+
+  const currentUser = isSupabaseConfigured ? authUser : demoUser;
+
+  useEffect(() => {
+    if (!currentUser) {
+      setUserRoles([]);
+      return;
+    }
+    if (!isSupabaseConfigured || !supabase) {
+      // Mode démo : le rôle historique sert de repli pour ne pas casser l'UI.
+      setUserRoles([currentUser.role as AccessRoleCode]);
+      return;
+    }
+    supabase
+      .from('user_roles')
+      .select('roles(code)')
+      .eq('user_id', currentUser.id)
+      .then(({ data }) => {
+        const codes = (data || [])
+          .map((row: any) => row.roles?.code)
+          .filter(Boolean) as AccessRoleCode[];
+        setUserRoles(codes);
+      });
+  }, [currentUser?.id]);
 
   // Apparence du back-office (couleur, police, logo) : appliquée globalement,
   // y compris sur l'écran de connexion, dès le chargement de l'app.
@@ -257,8 +288,6 @@ export default function App() {
     }
   };
 
-  const currentUser = isSupabaseConfigured ? authUser : demoUser;
-
   if (isSupabaseConfigured && authLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center gap-4 text-slate-400">
@@ -288,7 +317,7 @@ export default function App() {
     <BrowserRouter>
       <div className="flex min-h-screen bg-slate-950 text-slate-100 antialiased">
         {/* Sidebar Left */}
-        <Sidebar currentUser={currentUser} onLogout={handleLogout} logoUrl={logoUrl} />
+        <Sidebar currentUser={currentUser} onLogout={handleLogout} logoUrl={logoUrl} userRoles={userRoles} />
 
         {/* Main Workspace Right */}
         <div className="flex-1 flex flex-col min-w-0">
@@ -311,6 +340,10 @@ export default function App() {
               <Route
                 path="/apparence"
                 element={currentUser.role === 'super_admin' ? <AppearanceManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
+              <Route
+                path="/rh/employes"
+                element={canAccessHrModule(userRoles) ? <EmployeesManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
               />
               <Route
                 path="/utilisateurs"
