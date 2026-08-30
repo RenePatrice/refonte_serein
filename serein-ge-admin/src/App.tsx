@@ -31,7 +31,7 @@ import MyProfile from './pages/hr/MyProfile';
 import MyProjectReports from './pages/hr/MyProjectReports';
 import MyTeam from './pages/hr/MyTeam';
 import { canAccessHrModule, canManageEmployees, canViewOwnTeam, hasAccessRole } from './lib/hrPermissions';
-import { Loader2, Compass } from 'lucide-react';
+import { Compass } from 'lucide-react';
 
 const DEMO_SESSION_KEY = 'serein_admin_demo_user';
 // Marque, pour l'onglet courant uniquement, qu'une session Supabase a franchi
@@ -306,11 +306,10 @@ export default function App() {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center gap-4 text-slate-400">
         {logoUrl ? (
-          <img src={logoUrl} alt="SEREIN-GE" className="w-14 h-14 rounded-full object-cover" />
+          <img src={logoUrl} alt="SEREIN-GE" className="w-28 h-28 rounded-full object-cover animate-spin" style={{ animationDuration: '2s' }} />
         ) : (
-          <Compass className="w-10 h-10 text-emerald-400" />
+          <Compass className="w-16 h-16 text-emerald-400 animate-spin" style={{ animationDuration: '2s' }} />
         )}
-        <Loader2 className="w-6 h-6 animate-spin" />
       </div>
     );
   }
