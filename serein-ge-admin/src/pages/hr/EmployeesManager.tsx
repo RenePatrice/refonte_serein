@@ -297,6 +297,15 @@ export default function EmployeesManager() {
     setContracts(contracts.filter((c) => c.id !== contractId));
   };
 
+  const handleUpdateContractStatus = async (contractId: string, status: ContractStatus) => {
+    setContracts(contracts.map((c) => (c.id === contractId ? { ...c, status } : c)));
+    if (!isSupabaseConfigured || !supabase) return;
+    const { error } = await supabase.from('contracts').update({ status }).eq('id', contractId);
+    if (error) {
+      alert('Échec de la mise à jour du statut : ' + error.message);
+    }
+  };
+
   const getStatusBadge = (status: EmployeeStatus) => {
     const styles: Record<EmployeeStatus, string> = {
       actif: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
@@ -625,16 +634,24 @@ export default function EmployeesManager() {
               <div className="space-y-2 mb-3">
                 {contracts.length === 0 && <p className="text-slate-500">Aucun contrat enregistré.</p>}
                 {contracts.map((c) => (
-                  <div key={c.id} className="flex items-center justify-between p-3 rounded-xl bg-slate-950 border border-slate-800">
-                    <div>
+                  <div key={c.id} className="flex items-center justify-between gap-2 p-3 rounded-xl bg-slate-950 border border-slate-800">
+                    <div className="min-w-0">
                       <span className="font-bold text-white">{c.contract_type}</span>
                       <span className="text-slate-400"> — {c.start_date} → {c.end_date || 'indéterminé'}</span>
                       {c.base_salary && <span className="text-slate-500"> · {c.base_salary.toLocaleString('fr-FR')} {c.currency}</span>}
-                      <span className="text-[10px] text-slate-500 block">{c.status}</span>
                     </div>
-                    <button type="button" onClick={() => handleDeleteContract(c.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-950/40">
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <select
+                        value={c.status}
+                        onChange={(e) => handleUpdateContractStatus(c.id, e.target.value as ContractStatus)}
+                        className="px-2 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-white text-[11px] focus:outline-none focus:border-emerald-500"
+                      >
+                        {CONTRACT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                      <button type="button" onClick={() => handleDeleteContract(c.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-950/40">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>

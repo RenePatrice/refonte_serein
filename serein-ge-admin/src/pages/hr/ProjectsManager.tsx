@@ -238,6 +238,15 @@ export default function ProjectsManager() {
     setMilestones(milestones.filter((m) => m.id !== id));
   };
 
+  const handleUpdateMilestoneStatus = async (id: string, status: MilestoneStatus) => {
+    setMilestones(milestones.map((m) => (m.id === id ? { ...m, status } : m)));
+    if (!isSupabaseConfigured || !supabase) return;
+    const { error } = await supabase.from('project_milestones').update({ status }).eq('id', id);
+    if (error) {
+      alert('Échec de la mise à jour du statut : ' + error.message);
+    }
+  };
+
   const getStatusBadge = (status: ProjectStatus) => {
     const styles: Record<ProjectStatus, string> = {
       planifie: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
@@ -437,15 +446,23 @@ export default function ProjectsManager() {
               <div className="space-y-2 mb-3">
                 {milestones.length === 0 && <p className="text-slate-500">Aucun jalon pour le moment.</p>}
                 {milestones.map((m) => (
-                  <div key={m.id} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-                    <div>
+                  <div key={m.id} className="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-slate-950 border border-slate-800">
+                    <div className="min-w-0">
                       <span className="font-semibold text-white">{m.title}</span>
                       <span className="text-slate-400"> — {m.due_date}</span>
-                      <span className="text-[10px] text-slate-500 block uppercase">{m.status}</span>
                     </div>
-                    <button type="button" onClick={() => handleRemoveMilestone(m.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-950/40">
-                      <X className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <select
+                        value={m.status}
+                        onChange={(e) => handleUpdateMilestoneStatus(m.id, e.target.value as MilestoneStatus)}
+                        className="px-2 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-white text-[11px] focus:outline-none focus:border-emerald-500"
+                      >
+                        {MILESTONE_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                      <button type="button" onClick={() => handleRemoveMilestone(m.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-950/40">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
