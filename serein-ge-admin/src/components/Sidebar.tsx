@@ -20,21 +20,24 @@ import {
   FileSignature,
   Palette,
   UserSquare2,
-  FolderKanban
+  FolderKanban,
+  UserCircle,
+  ClipboardList
 } from 'lucide-react';
 import { AdminUser } from '../types';
 import { AccessRoleCode } from '../types/hr.types';
 import { isPathAllowed } from '../lib/permissions';
-import { canAccessHrModule } from '../lib/hrPermissions';
+import { canAccessHrModule, hasAccessRole } from '../lib/hrPermissions';
 
 interface SidebarProps {
   currentUser: AdminUser;
   onLogout: () => void;
   logoUrl?: string | null;
   userRoles?: AccessRoleCode[];
+  myEmployeeId?: string | null;
 }
 
-export default function Sidebar({ currentUser, onLogout, logoUrl, userRoles = [] }: SidebarProps) {
+export default function Sidebar({ currentUser, onLogout, logoUrl, userRoles = [], myEmployeeId }: SidebarProps) {
   const menuItems = [
     { label: 'Tableau de bord', path: '/', icon: LayoutDashboard },
     { label: 'Produits & Stock', path: '/produits', icon: Package, badge: 'Stock' },
@@ -60,6 +63,15 @@ export default function Sidebar({ currentUser, onLogout, logoUrl, userRoles = []
   if (canAccessHrModule(userRoles)) {
     visibleItems.splice(4, 0, { label: 'Employés RH', path: '/rh/employes', icon: UserSquare2 });
     visibleItems.splice(5, 0, { label: 'Projets', path: '/rh/projets', icon: FolderKanban });
+  }
+
+  // Self-service : visible à tout compte lié à une fiche employé, quel que
+  // soit son rôle d'accès.
+  if (myEmployeeId) {
+    visibleItems.push({ label: 'Mon Profil RH', path: '/rh/mon-profil', icon: UserCircle });
+    if (hasAccessRole(userRoles, 'responsable_projet')) {
+      visibleItems.push({ label: 'Mes Rapports', path: '/rh/mes-rapports', icon: ClipboardList });
+    }
   }
 
   return (

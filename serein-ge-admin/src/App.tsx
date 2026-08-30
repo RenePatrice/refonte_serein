@@ -27,7 +27,9 @@ import { applyFontPreset } from './lib/fontPresets';
 import { AccessRoleCode } from './types/hr.types';
 import EmployeesManager from './pages/hr/EmployeesManager';
 import ProjectsManager from './pages/hr/ProjectsManager';
-import { canAccessHrModule } from './lib/hrPermissions';
+import MyProfile from './pages/hr/MyProfile';
+import MyProjectReports from './pages/hr/MyProjectReports';
+import { canAccessHrModule, hasAccessRole } from './lib/hrPermissions';
 import { Loader2, Compass } from 'lucide-react';
 
 const DEMO_SESSION_KEY = 'serein_admin_demo_user';
@@ -82,17 +84,21 @@ export default function App() {
   // Rôles additifs du module RH (cumul via user_roles), indépendants du
   // users.role historique (super_admin/editeur) utilisé par lib/permissions.ts.
   const [userRoles, setUserRoles] = useState<AccessRoleCode[]>([]);
+  // Fiche employé liée au compte courant, si elle existe (self-service RH).
+  const [myEmployeeId, setMyEmployeeId] = useState<string | null>(null);
 
   const currentUser = isSupabaseConfigured ? authUser : demoUser;
 
   useEffect(() => {
     if (!currentUser) {
       setUserRoles([]);
+      setMyEmployeeId(null);
       return;
     }
     if (!isSupabaseConfigured || !supabase) {
       // Mode démo : le rôle historique sert de repli pour ne pas casser l'UI.
       setUserRoles([currentUser.role as AccessRoleCode]);
+      setMyEmployeeId(null);
       return;
     }
     supabase
@@ -105,6 +111,12 @@ export default function App() {
           .filter(Boolean) as AccessRoleCode[];
         setUserRoles(codes);
       });
+    supabase
+      .from('employees')
+      .select('id')
+      .eq('user_id', currentUser.id)
+      .maybeSingle()
+      .then(({ data }) => setMyEmployeeId(data?.id || null));
   }, [currentUser?.id]);
 
   // Apparence du back-office (couleur, police, logo) : appliquée globalement,
@@ -318,7 +330,7 @@ export default function App() {
     <BrowserRouter>
       <div className="flex min-h-screen bg-slate-950 text-slate-100 antialiased">
         {/* Sidebar Left */}
-        <Sidebar currentUser={currentUser} onLogout={handleLogout} logoUrl={logoUrl} userRoles={userRoles} />
+        <Sidebar currentUser={currentUser} onLogout={handleLogout} logoUrl={logoUrl} userRoles={userRoles} myEmployeeId={myEmployeeId} />
 
         {/* Main Workspace Right */}
         <div className="flex-1 flex flex-col min-w-0">
@@ -349,6 +361,18 @@ export default function App() {
               <Route
                 path="/rh/projets"
                 element={canAccessHrModule(userRoles) ? <ProjectsManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
+              <Route
+                path="/rh/mon-profil"
+                element={myEmployeeId ? <MyProfile employeeId={myEmployeeId} /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
+              <Route
+                path="/rh/mes-rapports"
+                element={
+                  myEmployeeId && hasAccessRole(userRoles, 'responsable_projet')
+                    ? <MyProjectReports employeeId={myEmployeeId} />
+                    : <Navigate to={EDITEUR_DEFAULT_PATH} replace />
+                }
               />
               <Route
                 path="/utilisateurs"
