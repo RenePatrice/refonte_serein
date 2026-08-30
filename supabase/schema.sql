@@ -286,6 +286,18 @@ CREATE TABLE IF NOT EXISTS public.analytics_events (
     created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
+-- Ligne de configuration unique de l'apparence du site public (couleur de
+-- marque, logo). N'affecte PAS la palette verte de validation/statut du
+-- back-office, qui reste une convention UX fixe (succès=vert, échec=rouge).
+CREATE TABLE IF NOT EXISTS public.site_settings (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    primary_color TEXT NOT NULL DEFAULT '#CA9100',
+    logo_url TEXT,
+    site_tagline TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
 -- ==============================================================================
 -- INDEX POUR L'OPTIMISATION DES PERFORMANCES
 -- ==============================================================================
@@ -331,7 +343,7 @@ BEGIN
         SELECT table_name 
         FROM information_schema.tables 
         WHERE table_schema = 'public' 
-          AND table_name IN ('users', 'departments', 'team', 'realisations', 'actualites', 'partners', 'products', 'orders', 'job_offers', 'applications', 'chatbot_settings', 'chatbot_conversations', 'quote_requests')
+          AND table_name IN ('users', 'departments', 'team', 'realisations', 'actualites', 'partners', 'products', 'orders', 'job_offers', 'applications', 'chatbot_settings', 'chatbot_conversations', 'quote_requests', 'site_settings')
     LOOP
         EXECUTE format('DROP TRIGGER IF EXISTS trigger_updated_at ON public.%I;', t);
         EXECUTE format('CREATE TRIGGER trigger_updated_at BEFORE UPDATE ON public.%I FOR EACH ROW EXECUTE FUNCTION public.handle_updated_at();', t);

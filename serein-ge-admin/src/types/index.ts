@@ -178,6 +178,14 @@ export type ChatbotSettings = {
   updated_at?: string;
 };
 
+export type SiteSettings = {
+  id: string;
+  primary_color: string;
+  logo_url?: string | null;
+  site_tagline?: string | null;
+  updated_at?: string;
+};
+
 export type Application = {
   id: string;
   job_offer_id?: string;

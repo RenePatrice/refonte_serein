@@ -172,3 +172,12 @@ CREATE POLICY "Collecte d'événements publique" ON public.analytics_events
     FOR INSERT WITH CHECK (true);
 CREATE POLICY "Lecture des événements par admin" ON public.analytics_events
     FOR SELECT USING (public.is_admin());
+
+-- Site Settings (apparence) : lecture publique (le site public doit pouvoir
+-- appliquer la couleur de marque et le logo sans être authentifié), écriture
+-- admin uniquement
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Lecture publique de l'apparence du site" ON public.site_settings
+    FOR SELECT USING (true);
+CREATE POLICY "Gestion de l'apparence par admin" ON public.site_settings
+    FOR ALL USING (public.is_admin());

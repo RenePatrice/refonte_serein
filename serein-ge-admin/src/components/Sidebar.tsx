@@ -17,7 +17,8 @@ import {
   Radio,
   LogOut,
   Bot,
-  FileSignature
+  FileSignature,
+  Palette
 } from 'lucide-react';
 import { AdminUser } from '../types';
 import { isPathAllowed } from '../lib/permissions';
@@ -41,6 +42,7 @@ export default function Sidebar({ currentUser, onLogout }: SidebarProps) {
     { label: 'Offres d\'Emploi', path: '/offres', icon: Briefcase },
     { label: 'Candidatures (CV)', path: '/candidatures', icon: FileText, highlight: true },
     { label: 'Assistant IA & Chatbot', path: '/chatbot', icon: Bot },
+    { label: 'Apparence', path: '/apparence', icon: Palette },
     { label: 'Utilisateurs & Rôles', path: '/utilisateurs', icon: UserCog },
     { label: 'Paramètres & Réseau', path: '/parametres', icon: Settings },
   ];

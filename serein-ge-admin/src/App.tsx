@@ -15,6 +15,7 @@ import ApplicationsManager from './pages/ApplicationsManager';
 import QuotesManager from './pages/QuotesManager';
 import UsersManager from './pages/UsersManager';
 import ChatbotManager from './pages/ChatbotManager';
+import AppearanceManager from './pages/AppearanceManager';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import { AdminUser } from './types';
@@ -284,6 +285,10 @@ export default function App() {
               <Route path="/offres" element={<RoleGuard currentUser={currentUser} path="/offres"><JobsManager /></RoleGuard>} />
               <Route path="/candidatures" element={<RoleGuard currentUser={currentUser} path="/candidatures"><ApplicationsManager /></RoleGuard>} />
               <Route path="/chatbot" element={<RoleGuard currentUser={currentUser} path="/chatbot"><ChatbotManager /></RoleGuard>} />
+              <Route
+                path="/apparence"
+                element={currentUser.role === 'super_admin' ? <AppearanceManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
               <Route
                 path="/utilisateurs"
                 element={currentUser.role === 'super_admin' ? <UsersManager currentUserId={currentUser.id} /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}

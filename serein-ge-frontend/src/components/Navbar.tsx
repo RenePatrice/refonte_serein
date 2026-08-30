@@ -15,12 +15,14 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { useCartStore } from '../lib/cart-store';
+import { useSiteSettings } from './ThemeProvider';
 
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  
+  const { logo_url } = useSiteSettings();
+
   const totalCount = useCartStore((state) => state.getTotalCount());
   const toggleCart = useCartStore((state) => state.toggleCart);
 
@@ -77,9 +79,17 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3 group shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-glow-emerald group-hover:scale-105 transition-transform duration-300 shrink-0">
-              <Compass className="w-6 h-6 text-white" />
-            </div>
+            {logo_url ? (
+              <img
+                src={logo_url}
+                alt="SEREIN-GE"
+                className="w-10 h-10 rounded-xl object-cover shadow-glow-emerald group-hover:scale-105 transition-transform duration-300 shrink-0"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center shadow-glow-emerald group-hover:scale-105 transition-transform duration-300 shrink-0">
+                <Compass className="w-6 h-6 text-white" />
+              </div>
+            )}
             <div className="hidden sm:block">
               <span className="text-xl font-bold font-display tracking-tight text-white flex items-center gap-1.5 whitespace-nowrap">
                 SEREIN<span className="text-emerald-400">-GE</span>
