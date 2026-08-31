@@ -22,6 +22,7 @@ import { formatFCFA } from '../../../lib/formatters';
 import { useCartStore } from '../../../lib/cart-store';
 import ProductCard from '../../../components/ProductCard';
 import { supabase, isSupabaseConfigured } from '../../../lib/supabase';
+import { trackEvent } from '../../../lib/analytics';
 
 interface ProductDetailClientProps {
   product: Product;
@@ -63,8 +64,14 @@ export default function ProductDetailClient({ product: initialProduct, relatedPr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialProduct.slug]);
 
+  useEffect(() => {
+    trackEvent('product_view', { productId: initialProduct.id, metadata: { nom: initialProduct.nom, slug: initialProduct.slug } });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialProduct.id]);
+
   const handleAddToCart = () => {
     addItem(product, quantity);
+    trackEvent('add_to_cart', { productId: product.id, metadata: { nom: product.nom, quantite: quantity } });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };

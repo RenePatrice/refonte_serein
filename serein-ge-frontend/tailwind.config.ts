@@ -10,47 +10,51 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Palette de marque SEREIN-GE (or/olive) — remplace l'accent émeraude
-        // d'origine. emerald/teal/cyan pointent tous vers cette même échelle
-        // pour unifier l'identité visuelle sur un seul ton.
+        // Palette de marque SEREIN-GE (or/olive), pilotable en direct depuis
+        // le module "Apparence" du back-office (table site_settings). Chaque
+        // teinte lit une variable CSS "R G B" définie dans globals.css (avec
+        // la valeur actuelle en repli), via le motif rgb(var(...) / alpha)
+        // qui préserve les modificateurs d'opacité Tailwind (bg-emerald-500/20
+        // etc.) utilisés dans tout le site. emerald/teal/cyan pointent toutes
+        // vers la même échelle pour unifier l'identité visuelle sur un seul ton.
         emerald: {
-          50: '#FAF6EE',
-          100: '#F3EAD3',
-          200: '#E6D3A8',
-          300: '#D4B876',
-          400: '#C4A25A',
-          500: '#B08838',
-          600: '#96733A',
-          700: '#7A5E33',
-          800: '#5E4A2A',
-          900: '#453620',
-          950: '#2A2113',
+          50: 'rgb(var(--brand-50) / <alpha-value>)',
+          100: 'rgb(var(--brand-100) / <alpha-value>)',
+          200: 'rgb(var(--brand-200) / <alpha-value>)',
+          300: 'rgb(var(--brand-300) / <alpha-value>)',
+          400: 'rgb(var(--brand-400) / <alpha-value>)',
+          500: 'rgb(var(--brand-500) / <alpha-value>)',
+          600: 'rgb(var(--brand-600) / <alpha-value>)',
+          700: 'rgb(var(--brand-700) / <alpha-value>)',
+          800: 'rgb(var(--brand-800) / <alpha-value>)',
+          900: 'rgb(var(--brand-900) / <alpha-value>)',
+          950: 'rgb(var(--brand-950) / <alpha-value>)',
         },
         teal: {
-          50: '#FAF6EE',
-          100: '#F3EAD3',
-          200: '#E6D3A8',
-          300: '#D4B876',
-          400: '#C4A25A',
-          500: '#B08838',
-          600: '#96733A',
-          700: '#7A5E33',
-          800: '#5E4A2A',
-          900: '#453620',
-          950: '#2A2113',
+          50: 'rgb(var(--brand-50) / <alpha-value>)',
+          100: 'rgb(var(--brand-100) / <alpha-value>)',
+          200: 'rgb(var(--brand-200) / <alpha-value>)',
+          300: 'rgb(var(--brand-300) / <alpha-value>)',
+          400: 'rgb(var(--brand-400) / <alpha-value>)',
+          500: 'rgb(var(--brand-500) / <alpha-value>)',
+          600: 'rgb(var(--brand-600) / <alpha-value>)',
+          700: 'rgb(var(--brand-700) / <alpha-value>)',
+          800: 'rgb(var(--brand-800) / <alpha-value>)',
+          900: 'rgb(var(--brand-900) / <alpha-value>)',
+          950: 'rgb(var(--brand-950) / <alpha-value>)',
         },
         cyan: {
-          50: '#FAF6EE',
-          100: '#F3EAD3',
-          200: '#E6D3A8',
-          300: '#D4B876',
-          400: '#C4A25A',
-          500: '#B08838',
-          600: '#96733A',
-          700: '#7A5E33',
-          800: '#5E4A2A',
-          900: '#453620',
-          950: '#2A2113',
+          50: 'rgb(var(--brand-50) / <alpha-value>)',
+          100: 'rgb(var(--brand-100) / <alpha-value>)',
+          200: 'rgb(var(--brand-200) / <alpha-value>)',
+          300: 'rgb(var(--brand-300) / <alpha-value>)',
+          400: 'rgb(var(--brand-400) / <alpha-value>)',
+          500: 'rgb(var(--brand-500) / <alpha-value>)',
+          600: 'rgb(var(--brand-600) / <alpha-value>)',
+          700: 'rgb(var(--brand-700) / <alpha-value>)',
+          800: 'rgb(var(--brand-800) / <alpha-value>)',
+          900: 'rgb(var(--brand-900) / <alpha-value>)',
+          950: 'rgb(var(--brand-950) / <alpha-value>)',
         },
         // Thème clair : slate-950 devient le fond le plus clair (au lieu du
         // plus sombre) puisque tout le site utilise ces classes comme base
@@ -96,14 +100,19 @@ const config: Config = {
           cyan: '#06b6d4',
           blue: '#2563eb',
         },
+        // Couleur secondaire de marque (module Apparence), utilisée pour les
+        // dégradés (logo, boutons) en complément de la couleur primaire.
+        secondary: 'rgb(var(--brand-secondary) / <alpha-value>)',
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        display: ['var(--font-outfit)', 'system-ui', 'sans-serif'],
+        // Pilotable en direct depuis le module Apparence (préréglages Google
+        // Fonts). Valeurs par défaut définies dans globals.css :root.
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        'glow-emerald': '0 0 20px -6px rgba(176, 136, 56, 0.28)',
-        'glow-gold': '0 0 20px -6px rgba(176, 136, 56, 0.28)',
+        'glow-emerald': '0 0 24px -6px rgba(202, 145, 0, 0.4)',
+        'glow-gold': '0 0 24px -6px rgba(202, 145, 0, 0.4)',
         'glass': '0 8px 32px 0 rgba(69, 54, 32, 0.1)',
       },
       animation: {

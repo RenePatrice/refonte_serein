@@ -6,6 +6,26 @@
   :root {
     --background: 45 60% 98%;
     --foreground: 30 55% 10%;
+
+    /* Couleur de marque (module Apparence, table site_settings). Valeurs
+       "R G B" par défaut = teinte or/olive actuelle ; le ThemeProvider les
+       remplace en direct si un admin choisit une autre couleur primaire. */
+    --brand-50: 253 248 237;
+    --brand-100: 251 237 206;
+    --brand-200: 244 216 154;
+    --brand-300: 234 190 92;
+    --brand-400: 223 164 48;
+    --brand-500: 202 145 0;
+    --brand-600: 168 116 0;
+    --brand-700: 133 92 8;
+    --brand-800: 107 74 17;
+    --brand-900: 89 62 20;
+    --brand-950: 48 32 8;
+    --brand-secondary: 15 118 110;
+
+    /* Police du site (module Apparence). Valeurs par défaut = combo actuel. */
+    --font-sans: 'Inter';
+    --font-display: 'Outfit';
   }
 
   body {
@@ -31,8 +51,8 @@
 }
 
 .glass-card:hover {
-  border-color: rgba(176, 136, 56, 0.35);
-  box-shadow: 0 10px 30px -10px rgba(176, 136, 56, 0.2);
+  border-color: rgba(202, 145, 0, 0.45);
+  box-shadow: 0 10px 30px -10px rgba(202, 145, 0, 0.3);
   transform: translateY(-3px);
 }
 
@@ -47,12 +67,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #CBAF78;
+  background: #EABE5C;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B08838;
+  background: #CA9100;
 }
 
 /* Subtle Grid Background Pattern */

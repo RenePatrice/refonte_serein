@@ -12,6 +12,7 @@ interface LoginProps {
   pendingOtpEmail: string | null;
   onQuickDemoLogin?: (user: AdminUser) => void;
   initialError?: string | null;
+  logoUrl?: string | null;
 }
 
 export default function Login({
@@ -22,6 +23,7 @@ export default function Login({
   pendingOtpEmail,
   onQuickDemoLogin,
   initialError,
+  logoUrl,
 }: LoginProps) {
   const [email, setEmail] = useState(isSupabaseConfigured ? '' : 'admin@serein-ge.bf');
   const [password, setPassword] = useState('');
@@ -79,9 +81,13 @@ export default function Login({
 
         {/* Brand Header */}
         <div className="text-center space-y-3">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center mx-auto shadow-glow-emerald">
-            <Compass className="w-8 h-8 text-white" />
-          </div>
+          {logoUrl ? (
+            <img src={logoUrl} alt="SEREIN-GE" className="w-16 h-16 rounded-full object-cover mx-auto shadow-glow-emerald" />
+          ) : (
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-secondary flex items-center justify-center mx-auto shadow-glow-emerald">
+              <Compass className="w-8 h-8 text-white" />
+            </div>
+          )}
           <div>
             <h1 className="text-2xl font-bold font-display text-white">SEREIN-GE Admin</h1>
             <p className="text-xs text-slate-400 mt-1">Supervision & Tableau de Bord d'Entreprise</p>
@@ -214,11 +220,13 @@ export default function Login({
           </div>
         )}
 
-        {/* Security badge */}
-        <div className="flex items-center justify-center space-x-2 text-[10px] text-slate-500 pt-1">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>{isSupabaseConfigured ? 'Authentification sécurisée (Supabase Auth)' : 'Mode démo hors-ligne — Supabase non configuré'}</span>
-        </div>
+        {/* Security badge — uniquement en mode démo hors-ligne */}
+        {!isSupabaseConfigured && (
+          <div className="flex items-center justify-center space-x-2 text-[10px] text-slate-500 pt-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Mode démo hors-ligne — Supabase non configuré</span>
+          </div>
+        )}
 
       </div>
 

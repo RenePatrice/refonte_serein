@@ -12,15 +12,26 @@ import NewsManager from './pages/NewsManager';
 import PartnersManager from './pages/PartnersManager';
 import JobsManager from './pages/JobsManager';
 import ApplicationsManager from './pages/ApplicationsManager';
+import QuotesManager from './pages/QuotesManager';
 import UsersManager from './pages/UsersManager';
 import ChatbotManager from './pages/ChatbotManager';
+import AppearanceManager from './pages/AppearanceManager';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import { AdminUser } from './types';
 import { INITIAL_USERS } from './lib/mock-admin-data';
 import { supabase, isSupabaseConfigured } from './lib/supabase';
 import { isPathAllowed, EDITEUR_DEFAULT_PATH } from './lib/permissions';
-import { Loader2, Compass } from 'lucide-react';
+import { applyBrandColor, applyCssVarColor } from './lib/theme';
+import { applyFontPreset } from './lib/fontPresets';
+import { AccessRoleCode } from './types/hr.types';
+import EmployeesManager from './pages/hr/EmployeesManager';
+import ProjectsManager from './pages/hr/ProjectsManager';
+import MyProfile from './pages/hr/MyProfile';
+import MyProjectReports from './pages/hr/MyProjectReports';
+import MyTeam from './pages/hr/MyTeam';
+import { canAccessHrModule, canManageEmployees, canViewOwnTeam, hasAccessRole } from './lib/hrPermissions';
+import { Compass } from 'lucide-react';
 
 const DEMO_SESSION_KEY = 'serein_admin_demo_user';
 // Marque, pour l'onglet courant uniquement, qu'une session Supabase a franchi
@@ -68,6 +79,64 @@ export default function App() {
   // Non-null pendant l'étape "code à 6 chiffres" : mot de passe déjà validé,
   // code envoyé par email, en attente de vérification.
   const [pendingOtpEmail, setPendingOtpEmail] = useState<string | null>(null);
+
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  // Rôles additifs du module RH (cumul via user_roles), indépendants du
+  // users.role historique (super_admin/editeur) utilisé par lib/permissions.ts.
+  const [userRoles, setUserRoles] = useState<AccessRoleCode[]>([]);
+  // Fiche employé liée au compte courant, si elle existe (self-service RH).
+  const [myEmployeeId, setMyEmployeeId] = useState<string | null>(null);
+
+  const currentUser = isSupabaseConfigured ? authUser : demoUser;
+
+  useEffect(() => {
+    if (!currentUser) {
+      setUserRoles([]);
+      setMyEmployeeId(null);
+      return;
+    }
+    if (!isSupabaseConfigured || !supabase) {
+      // Mode démo : le rôle historique sert de repli pour ne pas casser l'UI.
+      setUserRoles([currentUser.role as AccessRoleCode]);
+      setMyEmployeeId(null);
+      return;
+    }
+    supabase
+      .from('user_roles')
+      .select('roles(code)')
+      .eq('user_id', currentUser.id)
+      .then(({ data }) => {
+        const codes = (data || [])
+          .map((row: any) => row.roles?.code)
+          .filter(Boolean) as AccessRoleCode[];
+        setUserRoles(codes);
+      });
+    supabase
+      .from('employees')
+      .select('id')
+      .eq('user_id', currentUser.id)
+      .maybeSingle()
+      .then(({ data }) => setMyEmployeeId(data?.id || null));
+  }, [currentUser?.id]);
+
+  // Apparence du back-office (couleur, police, logo) : appliquée globalement,
+  // y compris sur l'écran de connexion, dès le chargement de l'app.
+  useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) return;
+    supabase
+      .from('site_settings')
+      .select('admin_primary_color, admin_secondary_color, admin_font_family, logo_url')
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!data) return;
+        if (data.admin_primary_color) applyBrandColor(data.admin_primary_color, 'admin-brand');
+        if (data.admin_secondary_color) applyCssVarColor('--admin-brand-secondary', data.admin_secondary_color);
+        applyFontPreset(data.admin_font_family, '--admin-font-sans', '--admin-font-display');
+        if (data.logo_url) setLogoUrl(data.logo_url);
+      });
+  }, []);
 
   useEffect(() => {
     if (!isSupabaseConfigured || !supabase) return;
@@ -233,14 +302,14 @@ export default function App() {
     }
   };
 
-  const currentUser = isSupabaseConfigured ? authUser : demoUser;
-
   if (isSupabaseConfigured && authLoading) {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center gap-4 text-slate-400">
-        <Compass className="w-10 h-10 text-emerald-400" />
-        <Loader2 className="w-6 h-6 animate-spin" />
-        <span className="text-xs">Vérification de la session Supabase...</span>
+        {logoUrl ? (
+          <img src={logoUrl} alt="SEREIN-GE" className="w-28 h-28 rounded-full object-cover animate-spin" style={{ animationDuration: '2s' }} />
+        ) : (
+          <Compass className="w-16 h-16 text-emerald-400 animate-spin" style={{ animationDuration: '2s' }} />
+        )}
       </div>
     );
   }
@@ -255,6 +324,7 @@ export default function App() {
         pendingOtpEmail={isSupabaseConfigured ? pendingOtpEmail : null}
         onQuickDemoLogin={!isSupabaseConfigured ? handleQuickDemoLogin : undefined}
         initialError={authError}
+        logoUrl={logoUrl}
       />
     );
   }
@@ -263,17 +333,18 @@ export default function App() {
     <BrowserRouter>
       <div className="flex min-h-screen bg-slate-950 text-slate-100 antialiased">
         {/* Sidebar Left */}
-        <Sidebar currentUser={currentUser} onLogout={handleLogout} />
+        <Sidebar currentUser={currentUser} onLogout={handleLogout} logoUrl={logoUrl} userRoles={userRoles} myEmployeeId={myEmployeeId} />
 
         {/* Main Workspace Right */}
         <div className="flex-1 flex flex-col min-w-0">
-          <Header title="Supervision SEREIN-GE" currentUser={currentUser} />
+          <Header title="Supervision SEREIN-GE" currentUser={currentUser} userRoles={userRoles} />
 
           <main className="flex-1 p-8 overflow-y-auto max-w-7xl w-full mx-auto">
             <Routes>
               <Route path="/" element={<RoleGuard currentUser={currentUser} path="/"><Dashboard /></RoleGuard>} />
               <Route path="/produits" element={<RoleGuard currentUser={currentUser} path="/produits"><ProductsManager /></RoleGuard>} />
               <Route path="/commandes" element={<RoleGuard currentUser={currentUser} path="/commandes"><OrdersManager /></RoleGuard>} />
+              <Route path="/devis" element={<RoleGuard currentUser={currentUser} path="/devis"><QuotesManager /></RoleGuard>} />
               <Route path="/paiements" element={<RoleGuard currentUser={currentUser} path="/paiements"><PaymentsManager /></RoleGuard>} />
               <Route path="/equipe" element={<RoleGuard currentUser={currentUser} path="/equipe"><TeamManager /></RoleGuard>} />
               <Route path="/realisations" element={<RoleGuard currentUser={currentUser} path="/realisations"><RealisationsManager /></RoleGuard>} />
@@ -282,6 +353,34 @@ export default function App() {
               <Route path="/offres" element={<RoleGuard currentUser={currentUser} path="/offres"><JobsManager /></RoleGuard>} />
               <Route path="/candidatures" element={<RoleGuard currentUser={currentUser} path="/candidatures"><ApplicationsManager /></RoleGuard>} />
               <Route path="/chatbot" element={<RoleGuard currentUser={currentUser} path="/chatbot"><ChatbotManager /></RoleGuard>} />
+              <Route
+                path="/apparence"
+                element={currentUser.role === 'super_admin' ? <AppearanceManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
+              <Route
+                path="/rh/employes"
+                element={canManageEmployees(userRoles) ? <EmployeesManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
+              <Route
+                path="/rh/mon-equipe"
+                element={canViewOwnTeam(userRoles) ? <MyTeam /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
+              <Route
+                path="/rh/projets"
+                element={canAccessHrModule(userRoles) ? <ProjectsManager /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
+              <Route
+                path="/rh/mon-profil"
+                element={myEmployeeId ? <MyProfile employeeId={myEmployeeId} /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}
+              />
+              <Route
+                path="/rh/mes-rapports"
+                element={
+                  myEmployeeId && hasAccessRole(userRoles, 'responsable_projet')
+                    ? <MyProjectReports employeeId={myEmployeeId} />
+                    : <Navigate to={EDITEUR_DEFAULT_PATH} replace />
+                }
+              />
               <Route
                 path="/utilisateurs"
                 element={currentUser.role === 'super_admin' ? <UsersManager currentUserId={currentUser.id} /> : <Navigate to={EDITEUR_DEFAULT_PATH} replace />}

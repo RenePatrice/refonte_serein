@@ -150,11 +150,44 @@ export type JobOffer = {
   created_at: string;
 };
 
+export type QuoteRequest = {
+  id: string;
+  reference: string;
+  service_type: string;
+  project_scope?: string;
+  surface_area?: string;
+  location: string;
+  timeframe?: string;
+  budget_estimate?: string;
+  client_nom: string;
+  client_prenom: string;
+  client_entreprise?: string;
+  client_email: string;
+  client_telephone: string;
+  description?: string;
+  statut: 'nouveau' | 'en_cours' | 'traite' | 'annule';
+  notes_internes?: string;
+  created_at: string;
+};
+
 export type ChatbotSettings = {
   id: string;
   is_enabled: boolean;
   welcome_message: string;
   system_prompt: string;
+  updated_at?: string;
+};
+
+export type SiteSettings = {
+  id: string;
+  primary_color: string;
+  secondary_color: string;
+  admin_primary_color: string;
+  admin_secondary_color: string;
+  font_family: string;
+  admin_font_family: string;
+  logo_url?: string | null;
+  site_tagline?: string | null;
   updated_at?: string;
 };
 

@@ -3,6 +3,28 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Couleur de marque du back-office (module Apparence, table
+       site_settings). Valeurs "R G B" par défaut = vert actuel ; n'affecte
+       jamais la sémantique succès/échec, seulement le ton utilisé. */
+    --admin-brand-50: 240 249 244;
+    --admin-brand-100: 220 242 227;
+    --admin-brand-200: 184 227 199;
+    --admin-brand-300: 140 207 163;
+    --admin-brand-400: 94 179 125;
+    --admin-brand-500: 62 155 99;
+    --admin-brand-600: 47 122 77;
+    --admin-brand-700: 38 98 62;
+    --admin-brand-800: 31 79 50;
+    --admin-brand-900: 25 63 40;
+    --admin-brand-950: 15 40 24;
+    --admin-brand-secondary: 94 179 125;
+
+    /* Police du back-office (module Apparence). Défaut = combo actuel. */
+    --admin-font-sans: 'Inter';
+    --admin-font-display: 'Outfit';
+  }
+
   body {
     @apply bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-white;
     font-feature-settings: "rlig" 1, "calt" 1;

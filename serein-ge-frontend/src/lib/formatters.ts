@@ -42,3 +42,13 @@ export function generateOrderReference(): string {
   const random = Math.floor(10000 + Math.random() * 90000);
   return `SER-${year}-${random}`;
 }
+
+/**
+ * Génère une référence unique de demande de devis
+ * Exemple: DEV-26-48291
+ */
+export function generateQuoteReference(): string {
+  const year = new Date().getFullYear().toString().slice(-2);
+  const random = Math.floor(10000 + Math.random() * 90000);
+  return `DEV-${year}-${random}`;
+}

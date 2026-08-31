@@ -25,6 +25,7 @@ import { INITIAL_PRODUCTS, INITIAL_ORDERS, INITIAL_APPLICATIONS } from '../lib/m
 import { formatFCFA } from '../lib/formatters';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { Product, Order, Application } from '../types';
+import IntelligencePanel from '../components/IntelligencePanel';
 
 const BRAND_COLORS = ['#B08F63', '#D9C4A0', '#8C6E47', '#C7A876', '#A3835A', '#E3D6BE'];
 const MONTHS_FR = ['Jan', 'Fév', 'Mars', 'Avril', 'Mai', 'Juin', 'Juill', 'Août', 'Sept', 'Oct', 'Nov', 'Déc'];
@@ -415,6 +416,8 @@ export default function Dashboard() {
         </div>
 
       </div>
+
+      <IntelligencePanel products={products} />
 
     </div>
   );

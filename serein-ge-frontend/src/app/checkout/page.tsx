@@ -14,6 +14,7 @@ import {
 import { useCartStore } from '../../lib/cart-store';
 import { formatFCFA, generateOrderReference } from '../../lib/formatters';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { trackEvent } from '../../lib/analytics';
 
 const COMPANY_WHATSAPP = '22670000000';
 
@@ -98,6 +99,7 @@ export default function CheckoutPage() {
       setTimeout(() => {
         setIsSubmitting(false);
         setOrderCompleted({ reference: orderRef, nom: clientNom, email: formData.email, total: totalPrice });
+        trackEvent('order_submitted', { metadata: { reference: orderRef, totalFcfa: totalPrice } });
         clearCart();
       }, 1200);
       return;
@@ -147,6 +149,7 @@ export default function CheckoutPage() {
 
       setIsSubmitting(false);
       setOrderCompleted({ reference: orderRef, nom: clientNom, email: formData.email, total: totalPrice });
+      trackEvent('order_submitted', { metadata: { reference: orderRef, totalFcfa: totalPrice, articles: items.length } });
       clearCart();
 
       window.open(`https://wa.me/${COMPANY_WHATSAPP}?text=${buildWhatsAppMessage(orderRef, clientNom)}`, '_blank');

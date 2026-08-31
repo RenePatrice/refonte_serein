@@ -4,7 +4,9 @@ import './globals.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CartDrawer from '../components/CartDrawer';
-import WhatsAppButton from '../components/WhatsAppButton';
+import ChatbotWidget from '../components/ChatbotWidget';
+import ThemeProvider from '../components/ThemeProvider';
+import PageViewTracker from '../components/PageViewTracker';
 
 export const metadata: Metadata = {
   title: 'SEREIN-GE | Ingénierie Géomatique, Topographie & Distribution Matériel de Haute Précision',
@@ -28,13 +30,16 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans antialiased">
-        <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <CartDrawer />
-        <WhatsAppButton />
-        <Footer />
+        <ThemeProvider>
+          <PageViewTracker />
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
+          <CartDrawer />
+          <ChatbotWidget />
+          <Footer />
+        </ThemeProvider>
         <SpeedInsights />
       </body>
     </html>

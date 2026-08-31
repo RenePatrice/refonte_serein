@@ -12,46 +12,47 @@ export default {
         // header), vert pour tout ce qui est validation/statut/action
         // (boutons Enregistrer, badges "actif"/"payé"/"retenu", succès), et
         // rouge pour les échecs (voir la palette red par défaut de Tailwind).
-        // emerald/teal/cyan pointent tous vers cette même échelle verte
-        // puisque ce sont les classes déjà utilisées partout pour ces usages.
+        // emerald/teal/cyan pointent tous vers cette même échelle, pilotable
+        // en direct depuis le module Apparence (site_settings.admin_primary_color)
+        // via une variable CSS "R G B" — valeurs par défaut ci-dessous inchangées.
         emerald: {
-          50: '#F0F9F4',
-          100: '#DCF2E3',
-          200: '#B8E3C7',
-          300: '#8CCFA3',
-          400: '#5EB37D',
-          500: '#3E9B63',
-          600: '#2F7A4D',
-          700: '#26623E',
-          800: '#1F4F32',
-          900: '#193F28',
-          950: '#0F2818',
+          50: 'rgb(var(--admin-brand-50) / <alpha-value>)',
+          100: 'rgb(var(--admin-brand-100) / <alpha-value>)',
+          200: 'rgb(var(--admin-brand-200) / <alpha-value>)',
+          300: 'rgb(var(--admin-brand-300) / <alpha-value>)',
+          400: 'rgb(var(--admin-brand-400) / <alpha-value>)',
+          500: 'rgb(var(--admin-brand-500) / <alpha-value>)',
+          600: 'rgb(var(--admin-brand-600) / <alpha-value>)',
+          700: 'rgb(var(--admin-brand-700) / <alpha-value>)',
+          800: 'rgb(var(--admin-brand-800) / <alpha-value>)',
+          900: 'rgb(var(--admin-brand-900) / <alpha-value>)',
+          950: 'rgb(var(--admin-brand-950) / <alpha-value>)',
         },
         teal: {
-          50: '#F0F9F4',
-          100: '#DCF2E3',
-          200: '#B8E3C7',
-          300: '#8CCFA3',
-          400: '#5EB37D',
-          500: '#3E9B63',
-          600: '#2F7A4D',
-          700: '#26623E',
-          800: '#1F4F32',
-          900: '#193F28',
-          950: '#0F2818',
+          50: 'rgb(var(--admin-brand-50) / <alpha-value>)',
+          100: 'rgb(var(--admin-brand-100) / <alpha-value>)',
+          200: 'rgb(var(--admin-brand-200) / <alpha-value>)',
+          300: 'rgb(var(--admin-brand-300) / <alpha-value>)',
+          400: 'rgb(var(--admin-brand-400) / <alpha-value>)',
+          500: 'rgb(var(--admin-brand-500) / <alpha-value>)',
+          600: 'rgb(var(--admin-brand-600) / <alpha-value>)',
+          700: 'rgb(var(--admin-brand-700) / <alpha-value>)',
+          800: 'rgb(var(--admin-brand-800) / <alpha-value>)',
+          900: 'rgb(var(--admin-brand-900) / <alpha-value>)',
+          950: 'rgb(var(--admin-brand-950) / <alpha-value>)',
         },
         cyan: {
-          50: '#F0F9F4',
-          100: '#DCF2E3',
-          200: '#B8E3C7',
-          300: '#8CCFA3',
-          400: '#5EB37D',
-          500: '#3E9B63',
-          600: '#2F7A4D',
-          700: '#26623E',
-          800: '#1F4F32',
-          900: '#193F28',
-          950: '#0F2818',
+          50: 'rgb(var(--admin-brand-50) / <alpha-value>)',
+          100: 'rgb(var(--admin-brand-100) / <alpha-value>)',
+          200: 'rgb(var(--admin-brand-200) / <alpha-value>)',
+          300: 'rgb(var(--admin-brand-300) / <alpha-value>)',
+          400: 'rgb(var(--admin-brand-400) / <alpha-value>)',
+          500: 'rgb(var(--admin-brand-500) / <alpha-value>)',
+          600: 'rgb(var(--admin-brand-600) / <alpha-value>)',
+          700: 'rgb(var(--admin-brand-700) / <alpha-value>)',
+          800: 'rgb(var(--admin-brand-800) / <alpha-value>)',
+          900: 'rgb(var(--admin-brand-900) / <alpha-value>)',
+          950: 'rgb(var(--admin-brand-950) / <alpha-value>)',
         },
         // Thème clair : slate-950 devient le fond le plus clair (blanc) au
         // lieu du plus sombre, puisque tout le dashboard utilise ces classes
@@ -89,6 +90,15 @@ export default {
           900: '#0f172a',
           950: '#090d16',
         },
+        secondary: 'rgb(var(--admin-brand-secondary) / <alpha-value>)',
+      },
+      fontFamily: {
+        // Corrige un bug préexistant : ces classes n'avaient jamais été
+        // configurées, donc font-sans/font-display ne faisaient rien malgré
+        // le chargement d'Inter/Outfit dans index.html. Pilotable en direct
+        // depuis le module Apparence (site_settings.admin_font_family).
+        sans: ['var(--admin-font-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--admin-font-display)', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         'glow-emerald': '0 0 20px -6px rgba(62, 155, 99, 0.3)',

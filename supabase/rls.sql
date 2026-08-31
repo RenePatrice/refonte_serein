@@ -119,6 +119,13 @@ CREATE POLICY "Gestion lignes de commande par admin" ON public.order_items
 CREATE POLICY "Gestion logs de paiement réservée aux admins et webhooks de confiance" ON public.payment_logs
     FOR ALL USING (public.is_admin());
 
+-- Quote Requests (demandes de devis)
+ALTER TABLE public.quote_requests ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Dépôt de demande de devis public" ON public.quote_requests
+    FOR INSERT WITH CHECK (true);
+CREATE POLICY "Gestion des demandes de devis par admin" ON public.quote_requests
+    FOR ALL USING (public.is_admin());
+
 -- ------------------------------------------------------------------------------
 -- 4. POLITIQUES : RECRUTEMENT (Offres & Candidatures)
 -- ------------------------------------------------------------------------------
@@ -165,3 +172,12 @@ CREATE POLICY "Collecte d'événements publique" ON public.analytics_events
     FOR INSERT WITH CHECK (true);
 CREATE POLICY "Lecture des événements par admin" ON public.analytics_events
     FOR SELECT USING (public.is_admin());
+
+-- Site Settings (apparence) : lecture publique (le site public doit pouvoir
+-- appliquer la couleur de marque et le logo sans être authentifié), écriture
+-- admin uniquement
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Lecture publique de l'apparence du site" ON public.site_settings
+    FOR SELECT USING (true);
+CREATE POLICY "Gestion de l'apparence par admin" ON public.site_settings
+    FOR ALL USING (public.is_admin());

@@ -96,7 +96,7 @@ export default function ChatbotManager() {
       <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30 text-xs text-amber-200 flex items-start gap-2">
         <Sparkles className="w-4 h-4 shrink-0 mt-0.5" />
         <span>
-          Cette page configure le comportement du chatbot. Le widget de conversation en temps réel sur le site public et le moteur de réponse IA sont en cours de mise en place et suivront dans une prochaine mise à jour.
+          Le widget de conversation est actif sur le site public dès que "Activer le chatbot" est coché ci-dessous. Les changements sont visibles immédiatement, sans redéploiement.
         </span>
       </div>
 
