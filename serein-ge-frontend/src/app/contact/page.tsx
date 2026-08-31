@@ -159,7 +159,7 @@ export default function ContactAndQuotePage() {
                   <div>
                     <div className="font-semibold text-white">Siège Social SEREIN-GE</div>
                     <div className="text-slate-400 mt-0.5 leading-relaxed">
-                      Avenue Pascal ZAGRÉ, Secteur 15, Ouaga 2000, Ouagadougou, Burkina Faso
+                      Dassasgho, Ouagadougou, Burkina Faso
                     </div>
                   </div>
                 </li>
