@@ -197,7 +197,7 @@ export default function ContactAndQuotePage() {
 
               <div className="pt-2">
                 <a
-                  href="https://wa.me/22670000000"
+                  href="https://wa.me/22677880445"
                   target="_blank"
                   rel="noreferrer"
                   className="w-full flex items-center justify-center space-x-2 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs shadow-glow-emerald transition"
@@ -215,15 +215,15 @@ export default function ContactAndQuotePage() {
                   <MapPin className="w-4 h-4 text-emerald-400" />
                   <span>Localisation GPS du Siège</span>
                 </span>
-                <span className="text-[10px] font-mono text-emerald-400">12°19'14"N 1°30'28"W</span>
+                <span className="text-[10px] font-mono text-emerald-400">12°22'36.62"N, 1°28'0.07"O</span>
               </div>
               <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-800">
                 <ContactMap />
               </div>
               <div className="text-center">
-                <div className="text-[11px] text-slate-400">Face au Monument des Martyrs, Ouaga 2000</div>
+                <div className="text-[11px] text-slate-400">Non loin du CHU Charles De Gaule</div>
                 <a
-                  href="https://maps.google.com/?q=12.3206,-1.5078"
+                  href="https://maps.app.goo.gl/xEMAM5pSkH8GHfta6"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-block mt-1 text-[10px] text-emerald-400 underline"
