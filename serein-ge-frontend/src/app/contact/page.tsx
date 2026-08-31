@@ -246,7 +246,7 @@ export default function ContactAndQuotePage() {
                   </div>
                   <h3 className="text-2xl font-bold text-white font-display">Demande de Devis Enregistrée !</h3>
                   <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-                    Merci <strong>{quoteData.prenom} {quoteData.nom}</strong>. Nos ingénieurs géomètres étudient votre demande pour la prestation <em>{quoteData.serviceType}</em> et vous recontacteront par téléphone/email avec un chiffrage précis.
+                    Merci <strong>{quoteData.nom} {quoteData.prenom}</strong>. Nos ingénieurs géomètres étudient votre demande pour la prestation <em>{quoteData.serviceType}</em> et vous recontacteront par téléphone/email avec des informations précises.
                   </p>
                   <div className="pt-6">
                     <button
