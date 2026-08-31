@@ -170,7 +170,7 @@ export default function ContactAndQuotePage() {
                   </div>
                   <div>
                     <div className="font-semibold text-white">Téléphone Standard</div>
-                    <div className="text-slate-400 mt-0.5">+226 25 30 00 00 / +226 70 00 00 00</div>
+                    <div className="text-slate-400 mt-0.5">(226) 25 36 42 94</div>
                   </div>
                 </li>
 
@@ -180,7 +180,7 @@ export default function ContactAndQuotePage() {
                   </div>
                   <div>
                     <div className="font-semibold text-white">Courrier Électronique</div>
-                    <div className="text-slate-400 mt-0.5">contact@serein-ge.bf</div>
+                    <div className="text-slate-400 mt-0.5">contact@serein-ge.com</div>
                   </div>
                 </li>
 
@@ -190,7 +190,7 @@ export default function ContactAndQuotePage() {
                   </div>
                   <div>
                     <div className="font-semibold text-white">Heures d'Ouverture</div>
-                    <div className="text-slate-400 mt-0.5">Lundi au Vendredi : 08h00 - 12h30 / 15h00 - 18h00</div>
+                    <div className="text-slate-400 mt-0.5">Lundi au Vendredi : 07h00 - 12h / 12h30 - 16h00</div>
                   </div>
                 </li>
               </ul>
