@@ -179,7 +179,7 @@ export default function ChatbotWidget() {
         className="fixed bottom-6 right-6 z-40 flex items-center space-x-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-4 py-3 rounded-full shadow-2xl shadow-emerald-500/50 hover:scale-105 transition-all duration-300"
       >
         {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
-        {!isOpen && <span className="hidden sm:inline text-xs tracking-wide">Assistant SEREIN-GE</span>}
+        {!isOpen && <span className="hidden sm:inline text-xs tracking-wide">Mon Assistant</span>}
       </button>
     </>
   );

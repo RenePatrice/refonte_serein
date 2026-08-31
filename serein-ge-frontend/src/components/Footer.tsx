@@ -86,7 +86,7 @@ export default function Footer() {
             <div className="flex items-center gap-3 pt-2">
               <div className="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-mono text-white flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-slate-400"></span>
-                <span>Bureaux ouverts: Lun - Ven (08h00 - 18h00)</span>
+                <span>Bureaux ouverts: Lun - Ven (07h00 - 16h00)</span>
               </div>
             </div>
           </div>
@@ -171,15 +171,15 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start space-x-2.5">
                 <MapPin className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span className="text-slate-300">Avenue Pascal ZAGRÉ, Ouaga 2000, Ouagadougou, Burkina Faso</span>
+                <span className="text-slate-300">Quartier Dassasgho, 13 BP 11 Ouagadougou 13, Burkina Faso, Ex Secteur 28, Rue 28, Porte 478. </span>
               </li>
               <li className="flex items-center space-x-2.5">
                 <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="text-slate-300">+226 25 30 00 00 / 70 00 00 00</span>
+                <span className="text-slate-300">(226 ) 25 36 42 94</span>
               </li>
               <li className="flex items-center space-x-2.5">
                 <Mail className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="text-slate-300">contact@serein-ge.bf</span>
+                <span className="text-slate-300">contact@serein-ge.com</span>
               </li>
               <li className="pt-2">
                 <Link
@@ -197,7 +197,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-slate-500">
-            &copy; {new Date().getFullYear()} SEREIN-GE (Société d'Études, de Recherches et d'Ingénierie Géomatique). Tous droits réservés.
+            &copy; {new Date().getFullYear()} SEREIN-GE (Société d'Études, de Recherches Intégrées en Géomatique et Environnement). Tous droits réservés.
           </p>
         </div>
       </div>
